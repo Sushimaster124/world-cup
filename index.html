@@ -30,54 +30,73 @@
       font-size: 0.75rem; color: #999;
     }
 
-    /* ── Value edges ── */
-    .edges-card {
-      background: #fff;
-      border: 1px solid #e5e5e5;
-      border-radius: 12px;
-      padding: 20px 24px 16px;
-      margin-bottom: 36px;
+    /* ── Best Bets section ── */
+    .bets-section { margin-bottom: 40px; }
+    .bets-header {
+      display: flex; align-items: baseline; gap: 10px;
+      margin-bottom: 16px;
     }
-    .edges-header {
-      display: flex; align-items: center; gap: 8px;
-      margin-bottom: 16px; flex-wrap: wrap;
+    .bets-title { font-size: 1.05rem; font-weight: 700; color: #111; }
+    .bets-count { font-size: 0.78rem; color: #bbb; }
+
+    .bet-group-label {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: #bbb;
+      padding-bottom: 8px; margin-bottom: 4px;
+      border-bottom: 1px solid #e8e8e8;
     }
-    .edges-title { font-size: 0.95rem; font-weight: 700; color: #111; }
-    .edges-sub {
-      margin-left: auto; font-size: 0.72rem; color: #16a34a;
-      background: #f0fdf4; border: 1px solid #bbf7d0;
-      border-radius: 99px; padding: 2px 10px; font-weight: 600;
+    .bet-group-label.today-label { color: #111; border-color: #111; }
+    .bet-group + .bet-group { margin-top: 20px; }
+
+    .bet-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 0; border-bottom: 1px solid #f0f0f0;
+      flex-wrap: wrap; cursor: default;
     }
-    .edges-scroll { overflow-x: auto; }
-    .edges-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; min-width: 560px; }
-    .edges-table thead th {
-      text-align: left; color: #999;
-      font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px;
-      padding: 0 14px 10px; border-bottom: 1px solid #e5e5e5; white-space: nowrap;
+    .bet-row:last-child { border-bottom: none; }
+    .bet-row:hover { background: #fafafa; margin: 0 -8px; padding: 10px 8px; border-radius: 8px; border-bottom: 1px solid transparent; }
+
+    .bet-date-chip {
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 0.5px;
+      border-radius: 4px; padding: 2px 7px; white-space: nowrap; flex-shrink: 0;
+      text-transform: uppercase;
     }
-    .edges-table tbody tr { border-bottom: 1px solid #f5f5f5; transition: background 0.1s; }
-    .edges-table tbody tr:hover { background: #fafafa; }
-    .edges-table td { padding: 10px 14px; vertical-align: middle; }
-    .e-rank  { color: #ccc; font-size: 0.7rem; width: 28px; }
-    .e-match { font-weight: 600; color: #111; }
-    .e-vs    { color: #ccc; font-weight: 400; margin: 0 6px; }
-    .e-wesay { color: #555; font-size: 0.82rem; }
-    .e-edge  { font-weight: 700; white-space: nowrap; font-size: 0.88rem; }
-    .e-odds  { color: #555; white-space: nowrap; font-size: 0.82rem; }
-    .e-book  { color: #bbb; font-size: 0.75rem; }
-    .obadge {
-      border-radius: 6px; padding: 2px 8px;
-      font-size: 0.7rem; font-weight: 600; white-space: nowrap;
+    .bet-date-chip.is-today { background: #111; color: #fff; }
+    .bet-date-chip.is-future { background: #f0f0f0; color: #888; }
+
+    .bet-match {
+      font-weight: 600; font-size: 0.88rem; color: #111;
+      flex: 1; min-width: 160px;
     }
-    .obadge-hw { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
-    .obadge-dr { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
-    .obadge-aw { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
-    .edges-section-label {
-      font-size: 0.68rem; font-weight: 700; letter-spacing: 1.5px;
-      text-transform: uppercase; color: #aaa;
-      margin-bottom: 10px; margin-top: 4px;
+    .bet-match .bet-vs { color: #ccc; font-weight: 400; margin: 0 4px; }
+
+    .bet-pick {
+      font-size: 0.78rem; font-weight: 700; color: #333;
+      background: #f5f5f5; border-radius: 6px;
+      padding: 3px 10px; white-space: nowrap;
     }
-    .edges-footer { margin-top: 12px; font-size: 0.68rem; color: #bbb; text-align: center; }
+
+    .bet-confidence {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px;
+      text-transform: uppercase; border-radius: 4px;
+      padding: 2px 7px; white-space: nowrap;
+    }
+    .conf-strong { background: #f0fdf4; color: #16a34a; }
+    .conf-value  { background: #eff6ff; color: #2563eb; }
+    .conf-lean   { background: #f9fafb; color: #9ca3af; }
+
+    .bet-edge {
+      font-size: 0.9rem; font-weight: 800; white-space: nowrap; min-width: 54px;
+      text-align: right;
+    }
+
+    .bet-odds {
+      font-size: 0.78rem; color: #888; white-space: nowrap;
+      margin-left: auto;
+    }
+    .bet-odds strong { color: #333; font-weight: 700; }
+
+    .bets-footer { margin-top: 14px; font-size: 0.67rem; color: #ccc; }
 
     /* ── Date section ── */
     .date-section { margin-bottom: 32px; }
@@ -184,10 +203,10 @@
   <header class="site-header">
     <h1>⚽ 2026 World Cup Predictions</h1>
     <p class="sub">XGBoost · 12,426 competitive matches · 59.6% test accuracy</p>
-    <span class="updated-badge">Updated June 20, 2026 at 03:33 PM</span>
+    <span class="updated-badge">Updated June 20, 2026 at 03:37 PM</span>
   </header>
 
-  <section class="edges-card" id="edges-section"></section>
+  <section class="bets-section" id="edges-section"></section>
 
   <main id="app"></main>
 
@@ -205,38 +224,38 @@ function todayISO() {
   return new Date().toISOString().slice(0, 10);
 }
 
-function edgeRows(list, startIdx) {
-  return list.map((e, i) => {
-    const cls = e.outcome === 'Draw'     ? 'obadge-dr'
-              : e.outcome === 'Home Win' ? 'obadge-hw' : 'obadge-aw';
-    const edgeColor = e.edge >= 20 ? '#16a34a' : e.edge >= 10 ? '#2563eb' : '#555';
-    const weSay = e.outcome === 'Draw'     ? `Draw ${e.model_p}%`
-                : e.outcome === 'Home Win' ? `${e.home} Win ${e.model_p}%`
-                :                           `${e.away} Win ${e.model_p}%`;
-    const oddsStr = e.best_odds
-      ? `${e.best_odds} <span class="e-book">@ ${e.best_book}</span>`
-      : '—';
-    return `<tr>
-      <td class="e-rank">${startIdx + i + 1}</td>
-      <td class="e-match">${e.home}<span class="e-vs">vs</span>${e.away}</td>
-      <td><span class="obadge ${cls}">${e.outcome}</span></td>
-      <td class="e-wesay">${weSay}</td>
-      <td class="e-edge" style="color:${edgeColor}">+${e.edge}%</td>
-      <td class="e-odds">${oddsStr}</td>
-    </tr>`;
-  }).join('');
+function fmtShort(iso) {
+  const d = new Date(iso + 'T12:00:00');
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
-function edgeTable(list, startIdx) {
-  if (!list.length) return '';
+function betPick(e) {
+  if (e.outcome === 'Draw')     return 'Draw';
+  if (e.outcome === 'Home Win') return e.home;
+  if (e.outcome === 'Away Win') return e.away;
+  return e.outcome; // Over 2.5 / Under 2.5 etc
+}
+
+function betRow(e, isToday) {
+  const pick    = betPick(e);
+  const conf    = e.edge >= 15 ? ['Strong', 'conf-strong']
+                : e.edge >= 8  ? ['Value',  'conf-value']
+                :                ['Lean',   'conf-lean'];
+  const edgeClr = e.edge >= 15 ? '#16a34a' : e.edge >= 8 ? '#2563eb' : '#6b7280';
+  const chip    = isToday
+    ? `<span class="bet-date-chip is-today">Today</span>`
+    : `<span class="bet-date-chip is-future">${fmtShort(e.date)}</span>`;
+  const odds    = e.best_odds
+    ? `<strong>${e.best_odds}</strong> · ${e.best_book}`
+    : '';
   return `
-    <div class="edges-scroll">
-      <table class="edges-table">
-        <thead>
-          <tr><th>#</th><th>Match</th><th>Bet</th><th>We Say</th><th>Edge</th><th>Odds</th></tr>
-        </thead>
-        <tbody>${edgeRows(list, startIdx)}</tbody>
-      </table>
+    <div class="bet-row">
+      ${chip}
+      <span class="bet-match">${e.home}<span class="bet-vs">vs</span>${e.away}</span>
+      <span class="bet-pick">${pick}</span>
+      <span class="bet-confidence ${conf[1]}">${conf[0]}</span>
+      <span class="bet-edge" style="color:${edgeClr}">+${e.edge}%</span>
+      <span class="bet-odds">${odds}</span>
     </div>`;
 }
 
@@ -244,30 +263,33 @@ function renderEdges() {
   const sec = document.getElementById('edges-section');
   if (!VALUE_BETS || VALUE_BETS.length === 0) { sec.style.display = 'none'; return; }
 
-  const today    = todayISO();
+  const today        = todayISO();
   const todayBets    = VALUE_BETS.filter(e => e.date === today);
   const upcomingBets = VALUE_BETS.filter(e => e.date !== today);
 
   let inner = `
-    <div class="edges-header">
-      <span>🔥</span>
-      <span class="edges-title">Best Value Edges</span>
-      <span class="edges-sub">${VALUE_BETS.length} bets vs market</span>
+    <div class="bets-header">
+      <span class="bets-title">Best Bets</span>
+      <span class="bets-count">${VALUE_BETS.length} edges vs market</span>
     </div>`;
 
   if (todayBets.length) {
     inner += `
-    <div class="edges-section-label">Today's Best Edges</div>
-    ${edgeTable(todayBets, 0)}`;
+    <div class="bet-group today-group">
+      <div class="bet-group-label today-label">Today</div>
+      ${todayBets.map(e => betRow(e, true)).join('')}
+    </div>`;
   }
 
   if (upcomingBets.length) {
     inner += `
-    <div class="edges-section-label" style="margin-top:${todayBets.length ? '20px' : '0'}">Upcoming Edges</div>
-    ${edgeTable(upcomingBets, todayBets.length)}`;
+    <div class="bet-group ${todayBets.length ? 'bet-group' : ''}">
+      <div class="bet-group-label">Upcoming · sorted by edge</div>
+      ${upcomingBets.map(e => betRow(e, false)).join('')}
+    </div>`;
   }
 
-  inner += `<div class="edges-footer">Model probability vs consensus bookmaker line · bet responsibly</div>`;
+  inner += `<p class="bets-footer">Model prob vs vig-free consensus · bet responsibly</p>`;
   sec.innerHTML = inner;
 }
 
