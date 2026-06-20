@@ -201,6 +201,18 @@
 
     .bets-footer { margin-top: 16px; font-size: 0.67rem; color: #ccc; }
 
+    /* ── All Games header ── */
+    .all-games-header {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 16px;
+    }
+    .all-games-title {
+      font-size: 1.05rem; font-weight: 700; color: #111;
+    }
+    .all-games-header::after {
+      content: ''; flex: 1; height: 1px; background: #e5e5e5;
+    }
+
     /* ── Day tabs ── */
     .day-tabs {
       display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap;
@@ -313,17 +325,29 @@
     .goals-pill.highlight-red { background: #fef2f2; border-color: #fecaca; color: #dc2626; }
 
     /* ── H2H ── */
-    .h2h-row {
+    .h2h-block {
       margin-top: 12px; padding-top: 10px; border-top: 1px solid #f0f0f0;
-      display: flex; align-items: center; justify-content: center;
-      gap: 5px; flex-wrap: wrap;
     }
-    .h2h-label { font-size: 0.67rem; color: #bbb; font-weight: 600; letter-spacing: 0.5px; }
-    .h2h-pill  { font-size: 0.68rem; border-radius: 99px; padding: 2px 8px; font-weight: 600; }
-    .h2h-hw { background: #f0fdf4; color: #16a34a; }
-    .h2h-dr { background: #fffbeb; color: #d97706; }
-    .h2h-aw { background: #fef2f2; color: #dc2626; }
-    .h2h-none { font-size: 0.68rem; color: #bbb; font-style: italic; }
+    .h2h-title {
+      font-size: 0.62rem; color: #bbb; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 7px;
+    }
+    .h2h-bar {
+      display: flex; height: 5px; border-radius: 99px; overflow: hidden; gap: 1px;
+    }
+    .h2h-seg { transition: width 0.4s ease; }
+    .h2h-seg-hw { background: #16a34a; }
+    .h2h-seg-dr { background: #d1d5db; }
+    .h2h-seg-aw { background: #dc2626; }
+    .h2h-legend {
+      display: flex; justify-content: space-between;
+      margin-top: 5px; font-size: 0.68rem; font-weight: 600;
+    }
+    .h2h-leg-hw { color: #16a34a; }
+    .h2h-leg-dr { color: #aaa; font-weight: 400; }
+    .h2h-leg-aw { color: #dc2626; }
+    .h2h-none { font-size: 0.68rem; color: #ccc; font-style: italic;
+      margin-top: 10px; padding-top: 10px; border-top: 1px solid #f0f0f0; }
 
     /* ── ELO ── */
     .elo-row { margin-top: 7px; text-align: center; font-size: 0.68rem; color: #ccc; }
@@ -434,7 +458,7 @@
   <header class="site-hero">
     <div class="hero-eyebrow">FIFA World Cup 2026</div>
     <h1 class="hero-title">Match<br>Picks</h1>
-    <p class="hero-sub">AI predictions for every game · updated daily · last refreshed June 20, 2026 at 05:11 PM</p>
+    <p class="hero-sub">AI predictions for every game · updated daily · last refreshed June 20, 2026 at 05:14 PM</p>
     <div class="hero-stats">
       <div class="hero-stat">
         <span class="stat-val">59.6%</span>
@@ -569,13 +593,20 @@ function goalsSection(m) {
 
 function h2hSection(m) {
   if (m.h2h_n === 0)
-    return `<div class="h2h-row"><span class="h2h-none">No prior matchups on record</span></div>`;
+    return `<div class="h2h-none">No prior matchups on record</div>`;
   return `
-    <div class="h2h-row">
-      <span class="h2h-label">Last ${m.h2h_n} meetings</span>
-      <span class="h2h-pill h2h-hw">${m.home} ${m.h2h_hw}%</span>
-      <span class="h2h-pill h2h-dr">Draw ${m.h2h_dr}%</span>
-      <span class="h2h-pill h2h-aw">${m.away} ${m.h2h_aw}%</span>
+    <div class="h2h-block">
+      <div class="h2h-title">Last ${m.h2h_n} meetings</div>
+      <div class="h2h-bar">
+        <div class="h2h-seg h2h-seg-hw" style="width:${m.h2h_hw}%"></div>
+        <div class="h2h-seg h2h-seg-dr" style="width:${m.h2h_dr}%"></div>
+        <div class="h2h-seg h2h-seg-aw" style="width:${m.h2h_aw}%"></div>
+      </div>
+      <div class="h2h-legend">
+        <span class="h2h-leg-hw">${m.home} ${m.h2h_hw}%</span>
+        <span class="h2h-leg-dr">${m.h2h_dr}% draws</span>
+        <span class="h2h-leg-aw">${m.h2h_aw}% ${m.away}</span>
+      </div>
     </div>`;
 }
 
@@ -644,7 +675,12 @@ function render() {
     </div>`;
   }).join('');
 
-  app.innerHTML = `<div class="day-tabs">${tabsHtml}</div>${panelsHtml}`;
+  app.innerHTML = `
+    <div class="all-games-header">
+      <span class="all-games-title">All Games</span>
+    </div>
+    <div class="day-tabs">${tabsHtml}</div>
+    ${panelsHtml}`;
 
   app.querySelectorAll('.day-tab').forEach(btn => {
     btn.addEventListener('click', function() {
