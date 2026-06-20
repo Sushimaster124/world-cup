@@ -458,7 +458,7 @@
   <header class="site-hero">
     <div class="hero-eyebrow">FIFA World Cup 2026</div>
     <h1 class="hero-title">Match<br>Picks</h1>
-    <p class="hero-sub">AI predictions for every game · updated daily · last refreshed June 20, 2026 at 05:14 PM</p>
+    <p class="hero-sub">AI predictions for every game · updated daily · last refreshed June 20, 2026 at 05:16 PM</p>
     <div class="hero-stats">
       <div class="hero-stat">
         <span class="stat-val">59.6%</span>
@@ -668,19 +668,19 @@ function render() {
   }).join('');
 
   const panelsHtml = sortedDates.map(d => {
-    const cards = byDate[d].map(card).join('');
+    const cards   = byDate[d].map(card).join('');
+    const dayBets = renderDayBets(d);
+    const allGamesHdr = dayBets
+      ? `<div class="all-games-header"><span class="all-games-title">All Games</span></div>`
+      : '';
     return `<div class="day-panel${d === defaultTab ? ' active' : ''}" data-date="${d}">
-      ${renderDayBets(d)}
+      ${dayBets}
+      ${allGamesHdr}
       <div class="match-grid">${cards}</div>
     </div>`;
   }).join('');
 
-  app.innerHTML = `
-    <div class="all-games-header">
-      <span class="all-games-title">All Games</span>
-    </div>
-    <div class="day-tabs">${tabsHtml}</div>
-    ${panelsHtml}`;
+  app.innerHTML = `<div class="day-tabs">${tabsHtml}</div>${panelsHtml}`;
 
   app.querySelectorAll('.day-tab').forEach(btn => {
     btn.addEventListener('click', function() {
