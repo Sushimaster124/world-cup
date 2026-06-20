@@ -104,6 +104,7 @@ def load_edges(top_n=15):
                     "home":      r["home"],
                     "away":      r["away"],
                     "outcome":   e["outcome"],
+                    "model_p":   e["model_p"],
                     "edge":      e["edge"],
                     "best_odds": e["best_odds"],
                     "best_book": e["best_book"] or "",
@@ -123,202 +124,162 @@ HTML_TEMPLATE = """\
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background: #0a0f1e;
-      color: #e2e8f0;
+      background: #f5f5f5;
+      color: #111;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
       min-height: 100vh;
     }
 
-    /* ── Layout ── */
-    .container { max-width: 1080px; margin: 0 auto; padding: 40px 20px 80px; }
+    .container { max-width: 1080px; margin: 0 auto; padding: 48px 20px 80px; }
 
     /* ── Header ── */
-    .site-header { text-align: center; margin-bottom: 48px; }
+    .site-header { margin-bottom: 40px; }
     .site-header h1 {
-      font-size: clamp(1.6rem, 4vw, 2.4rem);
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      background: linear-gradient(135deg, #f8fafc 0%, #94a3b8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 700; letter-spacing: -0.5px; color: #111;
     }
-    .site-header .sub {
-      margin-top: 8px; color: #64748b; font-size: 0.9rem;
-    }
+    .site-header .sub { margin-top: 4px; color: #888; font-size: 0.85rem; }
     .updated-badge {
-      display: inline-block; margin-top: 14px;
-      background: #1e293b; border: 1px solid #334155;
-      border-radius: 99px; padding: 4px 14px;
-      font-size: 0.78rem; color: #94a3b8;
+      display: inline-block; margin-top: 10px;
+      background: #fff; border: 1px solid #e5e5e5;
+      border-radius: 99px; padding: 3px 12px;
+      font-size: 0.75rem; color: #999;
     }
 
-    /* ── Date section ── */
-    .date-section { margin-bottom: 36px; }
-    .date-label {
-      font-size: 0.75rem; font-weight: 700; letter-spacing: 2px;
-      text-transform: uppercase; color: #475569;
-      border-bottom: 1px solid #1e293b;
-      padding-bottom: 8px; margin-bottom: 16px;
+    /* ── Value edges ── */
+    .edges-card {
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 12px;
+      padding: 20px 24px 16px;
+      margin-bottom: 36px;
     }
-    .date-label .today-tag {
-      background: #1d4ed8; color: #bfdbfe;
-      border-radius: 4px; padding: 2px 7px;
-      font-size: 0.7rem; margin-left: 8px; vertical-align: middle;
+    .edges-header {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 16px; flex-wrap: wrap;
+    }
+    .edges-title { font-size: 0.95rem; font-weight: 700; color: #111; }
+    .edges-sub {
+      margin-left: auto; font-size: 0.72rem; color: #16a34a;
+      background: #f0fdf4; border: 1px solid #bbf7d0;
+      border-radius: 99px; padding: 2px 10px; font-weight: 600;
+    }
+    .edges-scroll { overflow-x: auto; }
+    .edges-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; min-width: 560px; }
+    .edges-table thead th {
+      text-align: left; color: #999;
+      font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px;
+      padding: 0 14px 10px; border-bottom: 1px solid #e5e5e5; white-space: nowrap;
+    }
+    .edges-table tbody tr { border-bottom: 1px solid #f5f5f5; transition: background 0.1s; }
+    .edges-table tbody tr:hover { background: #fafafa; }
+    .edges-table td { padding: 10px 14px; vertical-align: middle; }
+    .e-rank  { color: #ccc; font-size: 0.7rem; width: 28px; }
+    .e-match { font-weight: 600; color: #111; }
+    .e-vs    { color: #ccc; font-weight: 400; margin: 0 6px; }
+    .e-wesay { color: #555; font-size: 0.82rem; }
+    .e-edge  { font-weight: 700; white-space: nowrap; font-size: 0.88rem; }
+    .e-odds  { color: #555; white-space: nowrap; font-size: 0.82rem; }
+    .e-book  { color: #bbb; font-size: 0.75rem; }
+    .obadge {
+      border-radius: 6px; padding: 2px 8px;
+      font-size: 0.7rem; font-weight: 600; white-space: nowrap;
+    }
+    .obadge-hw { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+    .obadge-dr { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
+    .obadge-aw { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+    .edges-footer { margin-top: 12px; font-size: 0.68rem; color: #bbb; text-align: center; }
+
+    /* ── Date section ── */
+    .date-section { margin-bottom: 32px; }
+    .date-label {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: #aaa;
+      border-bottom: 1px solid #e5e5e5;
+      padding-bottom: 8px; margin-bottom: 14px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .today-tag {
+      background: #111; color: #fff;
+      border-radius: 4px; padding: 1px 7px; font-size: 0.65rem;
     }
 
     /* ── Match grid ── */
     .match-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 14px;
+      gap: 12px;
     }
 
     /* ── Match card ── */
     .card {
-      background: #111827;
-      border: 1px solid #1f2937;
-      border-radius: 16px;
-      padding: 20px 20px 16px;
-      transition: border-color 0.15s, transform 0.15s;
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 12px;
+      padding: 18px 18px 14px;
+      transition: box-shadow 0.15s;
     }
-    .card:hover {
-      border-color: #334155;
-      transform: translateY(-2px);
-    }
+    .card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
 
     .teams {
       display: flex; align-items: center; justify-content: center;
-      gap: 10px; margin-bottom: 4px; flex-wrap: wrap;
+      gap: 8px; margin-bottom: 3px; flex-wrap: wrap;
     }
-    .team-name {
-      font-weight: 700; font-size: 0.95rem; white-space: nowrap;
-    }
-    .flag { font-size: 1.2rem; }
+    .team-name { font-weight: 700; font-size: 0.9rem; color: #111; white-space: nowrap; }
+    .flag { font-size: 1.1rem; }
     .vs {
-      background: #1f2937; color: #6b7280;
-      border-radius: 6px; padding: 2px 8px;
-      font-size: 0.7rem; font-weight: 700; letter-spacing: 1px;
+      background: #f5f5f5; color: #bbb;
+      border-radius: 5px; padding: 1px 7px;
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 1px;
     }
+    .card-meta { text-align: center; font-size: 0.72rem; color: #bbb; margin-bottom: 14px; }
 
-    .card-meta {
-      text-align: center; font-size: 0.75rem; color: #4b5563;
-      margin-bottom: 16px;
-    }
-    .neutral-dot {
-      display: inline-block; width: 5px; height: 5px;
-      background: #4b5563; border-radius: 50;
-      vertical-align: middle; margin: 0 5px;
-    }
-
-    /* ── Probability bars ── */
-    .bars { display: flex; flex-direction: column; gap: 8px; }
-    .bar-row { }
+    /* ── Bars ── */
+    .bars { display: flex; flex-direction: column; gap: 7px; }
     .bar-meta {
       display: flex; justify-content: space-between;
-      font-size: 0.8rem; margin-bottom: 4px;
+      font-size: 0.78rem; margin-bottom: 3px;
     }
-    .bar-meta .outcome { color: #9ca3af; }
-    .bar-meta .pct { font-weight: 700; }
-    .bar-meta.best .outcome { color: #e2e8f0; font-weight: 600; }
-    .track {
-      background: #1f2937; border-radius: 99px; height: 8px; overflow: hidden;
-    }
-    .fill {
-      height: 8px; border-radius: 99px;
-      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .fill-hw { background: linear-gradient(90deg, #16a34a, #22c55e); }
-    .fill-dr { background: linear-gradient(90deg, #d97706, #f59e0b); }
-    .fill-aw { background: linear-gradient(90deg, #dc2626, #ef4444); }
+    .bar-meta .outcome { color: #999; }
+    .bar-meta .pct { font-weight: 600; color: #555; }
+    .bar-meta.best .outcome { color: #111; font-weight: 600; }
+    .bar-meta.best .pct    { color: #111; }
+    .track { background: #f0f0f0; border-radius: 99px; height: 6px; overflow: hidden; }
+    .fill  { height: 6px; border-radius: 99px; transition: width 0.5s ease; }
+    .fill-hw { background: #16a34a; }
+    .fill-dr { background: #d97706; }
+    .fill-aw { background: #dc2626; }
 
-    /* ── H2H pill ── */
+    /* ── H2H ── */
     .h2h-row {
-      margin-top: 14px; padding-top: 12px;
-      border-top: 1px solid #1f2937;
+      margin-top: 12px; padding-top: 10px; border-top: 1px solid #f0f0f0;
       display: flex; align-items: center; justify-content: center;
-      gap: 6px; flex-wrap: wrap;
+      gap: 5px; flex-wrap: wrap;
     }
-    .h2h-label { font-size: 0.7rem; color: #4b5563; font-weight: 600; letter-spacing: 0.5px; }
-    .h2h-pill {
-      font-size: 0.72rem; border-radius: 99px; padding: 2px 9px; font-weight: 600;
-    }
-    .h2h-hw { background: #14532d; color: #86efac; }
-    .h2h-dr { background: #451a03; color: #fcd34d; }
-    .h2h-aw { background: #450a0a; color: #fca5a5; }
-    .h2h-none { font-size: 0.72rem; color: #4b5563; font-style: italic; }
+    .h2h-label { font-size: 0.67rem; color: #bbb; font-weight: 600; letter-spacing: 0.5px; }
+    .h2h-pill  { font-size: 0.68rem; border-radius: 99px; padding: 2px 8px; font-weight: 600; }
+    .h2h-hw { background: #f0fdf4; color: #16a34a; }
+    .h2h-dr { background: #fffbeb; color: #d97706; }
+    .h2h-aw { background: #fef2f2; color: #dc2626; }
+    .h2h-none { font-size: 0.68rem; color: #bbb; font-style: italic; }
 
-    /* ── ELO row ── */
-    .elo-row {
-      margin-top: 8px;
-      text-align: center;
-      font-size: 0.72rem; color: #374151;
-    }
-
-    /* ── Edges section ── */
-    .edges-card {
-      background: #050f08;
-      border: 1px solid #166534;
-      border-radius: 16px;
-      padding: 22px 24px 16px;
-      margin-bottom: 44px;
-    }
-    .edges-header {
-      display: flex; align-items: center; gap: 10px;
-      margin-bottom: 18px; flex-wrap: wrap;
-    }
-    .edges-title { font-size: 1.05rem; font-weight: 800; color: #f0fdf4; }
-    .edges-sub {
-      margin-left: auto; font-size: 0.78rem; color: #4ade80;
-      background: #14532d; border-radius: 99px; padding: 2px 10px;
-    }
-    .edges-scroll { overflow-x: auto; }
-    .edges-table {
-      width: 100%; border-collapse: collapse;
-      font-size: 0.85rem; min-width: 520px;
-    }
-    .edges-table thead th {
-      text-align: left; color: #4ade80;
-      font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;
-      padding: 0 12px 10px; border-bottom: 1px solid #166534;
-      white-space: nowrap;
-    }
-    .edges-table tbody tr { border-bottom: 1px solid #0d2b1533; transition: background 0.1s; }
-    .edges-table tbody tr:hover { background: #0d2b1566; }
-    .edges-table td { padding: 9px 12px; vertical-align: middle; }
-    .e-rank  { color: #374151; font-size: 0.72rem; width: 28px; }
-    .e-match { font-weight: 600; }
-    .e-vs    { color: #374151; font-weight: 400; margin: 0 5px; font-size: 0.8rem; }
-    .e-edge  { font-weight: 800; white-space: nowrap; }
-    .e-odds  { white-space: nowrap; }
-    .e-book  { color: #4b5563; font-size: 0.78rem; }
-    .obadge {
-      border-radius: 99px; padding: 2px 9px;
-      font-size: 0.7rem; font-weight: 700; white-space: nowrap;
-    }
-    .obadge-hw { background: #14532d; color: #86efac; }
-    .obadge-dr { background: #451a03; color: #fcd34d; }
-    .obadge-aw { background: #450a0a; color: #fca5a5; }
-    .edges-footer {
-      margin-top: 14px; font-size: 0.7rem;
-      color: #166534; text-align: center;
-    }
+    /* ── ELO ── */
+    .elo-row { margin-top: 7px; text-align: center; font-size: 0.68rem; color: #ccc; }
 
     /* ── Footer ── */
     footer {
-      margin-top: 60px; text-align: center;
-      font-size: 0.8rem; color: #334155;
-      border-top: 1px solid #1e293b; padding-top: 24px;
+      margin-top: 60px; text-align: center; font-size: 0.75rem; color: #bbb;
+      border-top: 1px solid #e5e5e5; padding-top: 20px;
     }
-    footer a { color: #475569; }
+    footer a { color: #aaa; }
   </style>
 </head>
 <body>
 <div class="container">
 
   <header class="site-header">
-    <h1>⚽ 2026 FIFA World Cup Predictions</h1>
-    <p class="sub">XGBoost · trained on 12,426 competitive international matches · 59.6% test accuracy</p>
+    <h1>⚽ 2026 World Cup Predictions</h1>
+    <p class="sub">XGBoost · 12,426 competitive matches · 59.6% test accuracy</p>
     <span class="updated-badge">Updated __UPDATED__</span>
   </header>
 
@@ -327,8 +288,8 @@ HTML_TEMPLATE = """\
   <main id="app"></main>
 
   <footer>
-    Model: XGBoost w/ rolling ELO, form, H2H &amp; goal differential features ·
-    <a href="https://www.kaggle.com/datasets/martj42/international-football-results-from-1872-to-2017">Data source</a>
+    XGBoost w/ rolling ELO, form, H2H &amp; goal differential ·
+    <a href="https://www.kaggle.com/datasets/martj42/international-football-results-from-1872-to-2017">Data</a>
   </footer>
 
 </div>
@@ -341,26 +302,36 @@ function renderEdges() {
   if (!VALUE_BETS || VALUE_BETS.length === 0) { sec.style.display = 'none'; return; }
 
   const rows = VALUE_BETS.map((e, i) => {
-    const cls = e.outcome === 'Draw' ? 'obadge-dr'
+    const cls = e.outcome === 'Draw'     ? 'obadge-dr'
               : e.outcome === 'Home Win' ? 'obadge-hw' : 'obadge-aw';
-    const color = e.edge >= 20 ? '#22c55e' : e.edge >= 10 ? '#86efac' : '#bbf7d0';
+    const edgeColor = e.edge >= 20 ? '#16a34a' : e.edge >= 10 ? '#2563eb' : '#555';
+    const weSay = e.outcome === 'Draw'     ? `Draw ${e.model_p}%`
+                : e.outcome === 'Home Win' ? `${e.home} Win ${e.model_p}%`
+                :                           `${e.away} Win ${e.model_p}%`;
+    const oddsStr = e.best_odds
+      ? `${e.best_odds} <span class="e-book">@ ${e.best_book}</span>`
+      : '—';
     return `<tr>
       <td class="e-rank">${i + 1}</td>
       <td class="e-match">${e.home}<span class="e-vs">vs</span>${e.away}</td>
       <td><span class="obadge ${cls}">${e.outcome}</span></td>
-      <td class="e-edge" style="color:${color}">+${e.edge}%</td>
+      <td class="e-wesay">${weSay}</td>
+      <td class="e-edge" style="color:${edgeColor}">+${e.edge}%</td>
+      <td class="e-odds">${oddsStr}</td>
     </tr>`;
   }).join('');
 
   sec.innerHTML = `
     <div class="edges-header">
-      <span style="font-size:1.3rem">🔥</span>
+      <span>🔥</span>
       <span class="edges-title">Best Value Edges</span>
       <span class="edges-sub">${VALUE_BETS.length} bets vs market</span>
     </div>
     <div class="edges-scroll">
       <table class="edges-table">
-        <thead><tr><th>#</th><th>Match</th><th>Bet</th><th>Edge</th></tr></thead>
+        <thead>
+          <tr><th>#</th><th>Match</th><th>Bet</th><th>We Say</th><th>Edge</th><th>Odds</th></tr>
+        </thead>
         <tbody>${rows}</tbody>
       </table>
     </div>
@@ -381,21 +352,18 @@ function barRow(label, pct, fillClass, isBest) {
     <div class="bar-row">
       <div class="bar-meta${isBest ? ' best' : ''}">
         <span class="outcome">${label}</span>
-        <span class="pct" style="color:${isBest ? '#e2e8f0' : '#6b7280'}">${pct.toFixed(1)}%</span>
+        <span class="pct">${pct.toFixed(1)}%</span>
       </div>
-      <div class="track">
-        <div class="fill ${fillClass}" style="width:${pct}%"></div>
-      </div>
+      <div class="track"><div class="fill ${fillClass}" style="width:${pct}%"></div></div>
     </div>`;
 }
 
 function h2hSection(m) {
-  if (m.h2h_n === 0) {
+  if (m.h2h_n === 0)
     return `<div class="h2h-row"><span class="h2h-none">No prior H2H in competitive play</span></div>`;
-  }
   return `
     <div class="h2h-row">
-      <span class="h2h-label">H2H (${m.h2h_n} games)</span>
+      <span class="h2h-label">H2H (${m.h2h_n})</span>
       <span class="h2h-pill h2h-hw">${m.home} ${m.h2h_hw}%</span>
       <span class="h2h-pill h2h-dr">Draw ${m.h2h_dr}%</span>
       <span class="h2h-pill h2h-aw">${m.away} ${m.h2h_aw}%</span>
@@ -403,10 +371,9 @@ function h2hSection(m) {
 }
 
 function card(m) {
-  const best = m.home_win >= m.draw && m.home_win >= m.away_win ? 'hw'
-             : m.away_win >= m.draw ? 'aw' : 'dr';
-  const venue = m.neutral ? 'Neutral venue' : `${m.home} home advantage`;
-
+  const best  = m.home_win >= m.draw && m.home_win >= m.away_win ? 'hw'
+              : m.away_win >= m.draw ? 'aw' : 'dr';
+  const venue = m.neutral ? 'Neutral venue' : `${m.home} home`;
   return `
     <div class="card">
       <div class="teams">
@@ -429,21 +396,15 @@ function card(m) {
 
 function render() {
   const byDate = {};
-  MATCHES.forEach(m => {
-    if (!byDate[m.date]) byDate[m.date] = [];
-    byDate[m.date].push(m);
-  });
+  MATCHES.forEach(m => { if (!byDate[m.date]) byDate[m.date] = []; byDate[m.date].push(m); });
 
   const app = document.getElementById('app');
   Object.keys(byDate).sort().forEach(dateStr => {
-    const today = isToday(dateStr);
-    const label = fmtDate(dateStr);
-    const todayTag = today ? '<span class="today-tag">TODAY</span>' : '';
-
+    const todayTag = isToday(dateStr) ? '<span class="today-tag">TODAY</span>' : '';
     const cards = byDate[dateStr].map(card).join('');
     app.innerHTML += `
       <section class="date-section">
-        <div class="date-label">${label}${todayTag}</div>
+        <div class="date-label">${fmtDate(dateStr)}${todayTag}</div>
         <div class="match-grid">${cards}</div>
       </section>`;
   });
