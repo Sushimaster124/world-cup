@@ -3,31 +3,60 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 World Cup Predictions</title>
+  <title>WC26 Picks</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background: #f5f5f5;
+      background: #f4f4f2;
       color: #111;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      font-family: "Space Grotesk", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
       min-height: 100vh;
     }
 
-    .container { max-width: 1080px; margin: 0 auto; padding: 48px 20px 80px; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 20px 80px; }
 
-    /* ── Header ── */
-    .site-header { margin-bottom: 40px; }
-    .site-header h1 {
-      font-size: clamp(1.4rem, 3vw, 2rem);
-      font-weight: 700; letter-spacing: -0.5px; color: #111;
+    /* ── Hero header ── */
+    .site-hero {
+      padding: 72px 0 52px;
+      margin-bottom: 48px;
+      border-bottom: 1px solid #e0e0e0;
     }
-    .site-header .sub { margin-top: 4px; color: #888; font-size: 0.85rem; }
-    .updated-badge {
-      display: inline-block; margin-top: 10px;
-      background: #fff; border: 1px solid #e5e5e5;
-      border-radius: 99px; padding: 3px 12px;
-      font-size: 0.75rem; color: #999;
+    .hero-eyebrow {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 3px;
+      text-transform: uppercase; color: #aaa; margin-bottom: 14px;
+    }
+    .hero-title {
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 800; letter-spacing: -3px; line-height: 0.95;
+      background: linear-gradient(120deg, #000 0%, #1a1a1a 40%, #16a34a 70%, #059669 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: titleShimmer 5s linear infinite;
+    }
+    @keyframes titleShimmer {
+      0%   { background-position: 0% center; }
+      100% { background-position: 200% center; }
+    }
+    .hero-sub {
+      margin-top: 18px; font-size: 0.9rem; color: #888; font-weight: 400;
+    }
+    .hero-stats {
+      display: flex; gap: 28px; margin-top: 28px; flex-wrap: wrap;
+    }
+    .hero-stat {
+      display: flex; flex-direction: column; gap: 2px;
+    }
+    .hero-stat .stat-val {
+      font-size: 1.4rem; font-weight: 800; color: #111;
+      font-family: "Courier New", monospace;
+    }
+    .hero-stat .stat-lbl {
+      font-size: 0.65rem; font-weight: 600; letter-spacing: 1px;
+      text-transform: uppercase; color: #bbb;
     }
 
     /* ── Best Bets chips ── */
@@ -220,10 +249,19 @@
     }
     .disclosure-val .mono { font-size: 1rem; font-weight: 700; }
 
+    /* ── Scroll reveal ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.55s cubic-bezier(0.22,1,0.36,1),
+                  transform 0.55s cubic-bezier(0.22,1,0.36,1);
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
     /* ── Footer ── */
     footer {
-      margin-top: 60px; text-align: center; font-size: 0.75rem; color: #bbb;
-      border-top: 1px solid #e5e5e5; padding-top: 20px;
+      margin-top: 60px; text-align: center; font-size: 0.78rem; color: #bbb;
+      border-top: 1px solid #e0e0e0; padding-top: 24px;
     }
     footer a { color: #aaa; }
   </style>
@@ -231,39 +269,36 @@
 <body>
 <div class="container">
 
-  <header class="site-header">
-    <h1>⚽ 2026 World Cup Predictions</h1>
-    <p class="sub">Predictions for every match · updated daily · last refreshed June 20, 2026 at 03:55 PM</p>
-  </header>
-
-  <div class="model-disclosure">
-    <p class="disclosure-intro">We trained a prediction model on <strong>12,000+ real international matches</strong> going back decades. It looks at team strength, recent form, head-to-head history, and goals data to call each game. Here's how often it's right:</p>
-    <div class="disclosure-stats">
-      <div class="disclosure-row">
-        <span class="disclosure-label">Who wins / draws / loses</span>
-        <span class="disclosure-val">Right <span class="mono">~6</span> out of <span class="mono">10</span></span>
+  <header class="site-hero">
+    <div class="hero-eyebrow">FIFA World Cup 2026</div>
+    <h1 class="hero-title">Match<br>Picks</h1>
+    <p class="hero-sub">AI predictions for every game · updated daily · last refreshed June 20, 2026 at 03:58 PM</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="stat-val">59.6%</span>
+        <span class="stat-lbl">Win/Draw/Loss accuracy</span>
       </div>
-      <div class="disclosure-row">
-        <span class="disclosure-label">Over or under 2.5 goals</span>
-        <span class="disclosure-val">Right <span class="mono">~6</span> out of <span class="mono">10</span></span>
+      <div class="hero-stat">
+        <span class="stat-val">59.1%</span>
+        <span class="stat-lbl">Over/Under 2.5 accuracy</span>
       </div>
-      <div class="disclosure-row">
-        <span class="disclosure-label">Both teams score?</span>
-        <span class="disclosure-val">Right <span class="mono">~5</span> out of <span class="mono">10</span></span>
+      <div class="hero-stat">
+        <span class="stat-val">54.4%</span>
+        <span class="stat-lbl">Both teams score accuracy</span>
       </div>
-      <div class="disclosure-row">
-        <span class="disclosure-label">Tested on</span>
-        <span class="disclosure-val">Games from <span class="mono">2018</span> onward</span>
+      <div class="hero-stat">
+        <span class="stat-val">12k+</span>
+        <span class="stat-lbl">Matches in training data</span>
       </div>
     </div>
-  </div>
+  </header>
 
   <section class="bets-section" id="edges-section"></section>
 
   <main id="app"></main>
 
   <footer>
-    Predictions based on historical match data, team strength, recent form &amp; head-to-head records ·
+    Built on 12,000+ international matches · team strength · form · head-to-head · goals data ·
     <a href="https://www.kaggle.com/datasets/martj42/international-football-results-from-1872-to-2017">Data source</a>
   </footer>
 
@@ -427,6 +462,33 @@ function render() {
 
 renderEdges();
 render();
+
+// Scroll reveal
+(function() {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  // Stagger cards within each grid
+  document.querySelectorAll('.match-grid, .chips-grid').forEach(grid => {
+    Array.from(grid.children).forEach((el, i) => {
+      el.classList.add('reveal');
+      el.style.transitionDelay = (i * 55) + 'ms';
+      obs.observe(el);
+    });
+  });
+
+  // Fade section headers and date labels
+  document.querySelectorAll('.date-label, .bets-header, .bets-group-label, .site-hero').forEach(el => {
+    el.classList.add('reveal');
+    obs.observe(el);
+  });
+})();
 </script>
 </body>
 </html>
