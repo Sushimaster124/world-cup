@@ -80,6 +80,26 @@ FEATURES = [
     "tournament_weight",
 ]
 
+GOALS_FEATURES = [
+    "elo_home", "elo_away", "elo_diff",
+    "home_form_5", "away_form_5",
+    "home_avg_scored_5", "home_avg_conceded_5",
+    "away_avg_scored_5", "away_avg_conceded_5",
+    "home_goal_diff_5", "away_goal_diff_5",
+    "is_neutral",
+    "tournament_weight",
+]
+
+BTTS_FEATURES = [
+    "elo_home", "elo_away", "elo_diff",
+    "home_form_5", "away_form_5",
+    "home_avg_scored_5", "home_avg_conceded_5",
+    "away_avg_scored_5", "away_avg_conceded_5",
+    "home_btts_rate_5", "away_btts_rate_5",
+    "is_neutral",
+    "tournament_weight",
+]
+
 
 # ── ELO ───────────────────────────────────────────────────────────────────────
 def _expected(r_a: float, r_b: float) -> float:
@@ -187,11 +207,14 @@ def build_features(all_df: pd.DataFrame, shootout_winners: dict):
 
     Returns (feature_df, elo_dict, team_snapshot, h2h_summary).
     """
-    elo            = defaultdict(lambda: DEFAULT_ELO)
-    form           = defaultdict(list)   # team -> [result, ...]  0/0.5/1
-    goal_diff      = defaultdict(list)   # team -> [gd, ...]  from team perspective
-    h2h            = defaultdict(list)   # (home, away) -> [(date, result), ...]
-    last_comp_date : dict = {}           # date of last COMPETITIVE match per team
+    elo              = defaultdict(lambda: DEFAULT_ELO)
+    form             = defaultdict(list)  # team -> [result, ...]  0/0.5/1
+    goal_diff        = defaultdict(list)  # team -> [gd, ...]  from team perspective
+    goals_scored     = defaultdict(list)  # team -> [goals scored per game]
+    goals_conceded   = defaultdict(list)  # team -> [goals conceded per game]
+    btts_games       = defaultdict(list)  # team -> [1/0 was it a BTTS game]
+    h2h              = defaultdict(list)  # (home, away) -> [(date, result), ...]
+    last_comp_date : dict = {}            # date of last COMPETITIVE match per team
 
     rows = []
     for _, row in all_df.iterrows():
@@ -230,6 +253,12 @@ def build_features(all_df: pd.DataFrame, shootout_winners: dict):
                 "is_neutral":         row["neutral"],
                 "home_goal_diff_5":   rolling_avg(goal_diff[home], 5),
                 "away_goal_diff_5":   rolling_avg(goal_diff[away], 5),
+                "home_avg_scored_5":  rolling_avg(goals_scored[home], 5),
+                "home_avg_conceded_5": rolling_avg(goals_conceded[home], 5),
+                "away_avg_scored_5":  rolling_avg(goals_scored[away], 5),
+                "away_avg_conceded_5": rolling_avg(goals_conceded[away], 5),
+                "home_btts_rate_5":   rolling_avg(btts_games[home], 5),
+                "away_btts_rate_5":   rolling_avg(btts_games[away], 5),
                 "home_days_rest":     h_rest,
                 "away_days_rest":     a_rest,
                 "tournament_weight":  TOURN_WEIGHT.get(tourn, DEFAULT_TW),
@@ -259,26 +288,38 @@ def build_features(all_df: pd.DataFrame, shootout_winners: dict):
             form[away].append(1.0 - score_h_true if score_h_true != 0.5 else 0.5)
             goal_diff[home].append(hs - as_)
             goal_diff[away].append(as_ - hs)
+            goals_scored[home].append(hs)
+            goals_scored[away].append(as_)
+            goals_conceded[home].append(as_)
+            goals_conceded[away].append(hs)
+            btts_val = 1.0 if (hs > 0 and as_ > 0) else 0.0
+            btts_games[home].append(btts_val)
+            btts_games[away].append(btts_val)
             h2h[(home, away)].append((date, score_h_true))
             last_comp_date[home] = date
             last_comp_date[away] = date
 
     feat_df = pd.DataFrame(rows)
 
-    # Target: 0 = Away Win, 1 = Draw, 2 = Home Win
+    # Targets
     feat_df["target"] = np.where(
         feat_df["home_score"] > feat_df["away_score"], 2,
         np.where(feat_df["home_score"] == feat_df["away_score"], 1, 0),
     )
+    feat_df["over25"] = ((feat_df["home_score"] + feat_df["away_score"]) > 2.5).astype(int)
+    feat_df["btts"]   = ((feat_df["home_score"] > 0) & (feat_df["away_score"] > 0)).astype(int)
 
     # Team snapshot — final state (for predictions.py)
     snapshot = {
         team: {
-            "elo":         elo[team],
-            "form_5":      weighted_form(form[team], 5),
-            "form_10":     weighted_form(form[team], 10),
-            "goal_diff_5": rolling_avg(goal_diff[team], 5),
-            "last_date":   last_comp_date.get(team),
+            "elo":           elo[team],
+            "form_5":        weighted_form(form[team], 5),
+            "form_10":       weighted_form(form[team], 10),
+            "goal_diff_5":   rolling_avg(goal_diff[team], 5),
+            "avg_scored_5":  rolling_avg(goals_scored[team], 5),
+            "avg_conceded_5": rolling_avg(goals_conceded[team], 5),
+            "btts_rate_5":   rolling_avg(btts_games[team], 5),
+            "last_date":     last_comp_date.get(team),
         }
         for team in elo
     }
@@ -385,14 +426,81 @@ def plot_confusion_matrix(y_true, y_pred, title: str, path: str):
     print(f"Saved: {path}")
 
 
+# ── Goals / BTTS models ───────────────────────────────────────────────────────
+def _binary_xgb(X_train, y_train, X_val, y_val):
+    w = compute_sample_weight("balanced", y_train)
+    clf = xgb.XGBClassifier(
+        objective             = "binary:logistic",
+        n_estimators          = 500,
+        max_depth             = 4,
+        learning_rate         = 0.05,
+        subsample             = 0.8,
+        colsample_bytree      = 0.8,
+        min_child_weight      = 3,
+        gamma                 = 0.1,
+        reg_alpha             = 0.1,
+        reg_lambda            = 1.0,
+        random_state          = 42,
+        eval_metric           = "logloss",
+        early_stopping_rounds = 30,
+        verbosity             = 0,
+    )
+    clf.fit(X_train, y_train, sample_weight=w,
+            eval_set=[(X_val, y_val)], verbose=False)
+    return clf
+
+
+def train_goals_models(feat_df: pd.DataFrame):
+    train_df = feat_df[feat_df["date"] < VAL_CUT]
+    val_df   = feat_df[(feat_df["date"] >= VAL_CUT) & (feat_df["date"] < TRAIN_CUT)]
+    test_df  = feat_df[feat_df["date"] >= TRAIN_CUT]
+
+    # ── Over/Under 2.5 ──
+    Xg_tr = train_df[GOALS_FEATURES].values
+    Xg_va = val_df[GOALS_FEATURES].values
+    Xg_te = test_df[GOALS_FEATURES].values
+    yg_tr = train_df["over25"].values
+    yg_te = test_df["over25"].values
+
+    xgb_goals = _binary_xgb(Xg_tr, yg_tr, Xg_va, val_df["over25"].values)
+    print(f"\nOver/Under 2.5 model — best iter: {getattr(xgb_goals, 'best_iteration', 'n/a')}")
+
+    # ── BTTS ──
+    Xb_tr = train_df[BTTS_FEATURES].values
+    Xb_va = val_df[BTTS_FEATURES].values
+    Xb_te = test_df[BTTS_FEATURES].values
+    yb_tr = train_df["btts"].values
+    yb_te = test_df["btts"].values
+
+    xgb_btts = _binary_xgb(Xb_tr, yb_tr, Xb_va, val_df["btts"].values)
+    print(f"BTTS model          — best iter: {getattr(xgb_btts, 'best_iteration', 'n/a')}")
+
+    return xgb_goals, xgb_btts, Xg_te, yg_te, Xb_te, yb_te
+
+
+def evaluate_binary(name: str, y_true, y_prob, pos_label: str, neg_label: str):
+    y_pred = (y_prob >= 0.5).astype(int)
+    print(f"\n{'─' * 52}")
+    print(f"  {name}")
+    print(f"{'─' * 52}")
+    print(f"  Accuracy : {accuracy_score(y_true, y_pred):.4f}")
+    print(f"  Log-loss : {log_loss(y_true, y_prob):.4f}")
+    print(classification_report(y_true, y_pred,
+                                target_names=[neg_label, pos_label], digits=3))
+
+
 # ── Save artifacts ────────────────────────────────────────────────────────────
-def save_artifacts(xgb_model, elo_dict: dict, snapshot: dict, h2h_summary: dict):
-    # trained_model.pkl — model + everything predictions.py needs
+def save_artifacts(xgb_model, xgb_goals, xgb_btts,
+                   elo_dict: dict, snapshot: dict, h2h_summary: dict):
     artifacts = {
-        "model":       xgb_model,
-        "features":    FEATURES,
-        "snapshot":    snapshot,
-        "h2h_summary": h2h_summary,
+        "model":          xgb_model,
+        "goals_model":    xgb_goals,
+        "btts_model":     xgb_btts,
+        "features":       FEATURES,
+        "goals_features": GOALS_FEATURES,
+        "btts_features":  BTTS_FEATURES,
+        "snapshot":       snapshot,
+        "h2h_summary":    h2h_summary,
     }
     model_path = os.path.join(BASE_DIR, "trained_model.pkl")
     with open(model_path, "wb") as f:
@@ -427,7 +535,7 @@ def main():
 
     xgb_pred = xgb_model.predict(X_test)
     xgb_prob = xgb_model.predict_proba(X_test)
-    evaluate("XGBoost", y_test, xgb_pred, xgb_prob)
+    evaluate("XGBoost — Match Outcome", y_test, xgb_pred, xgb_prob)
     plot_confusion_matrix(
         y_test, xgb_pred,
         "XGBoost — Test Set (2018+)",
@@ -442,12 +550,21 @@ def main():
         pd.Series(xgb_model.feature_importances_, index=FEATURES)
         .sort_values(ascending=False)
     )
-    print("\nFeature importances (XGBoost):")
+    print("\nFeature importances (XGBoost — Outcome):")
     for feat, imp in importances.items():
         bar = "█" * int(imp * 200)
         print(f"  {feat:<25} {imp:.4f}  {bar}")
 
-    save_artifacts(xgb_model, elo_dict, snapshot, h2h_summary)
+    # ── Goals / BTTS models ──
+    xgb_goals, xgb_btts, Xg_te, yg_te, Xb_te, yb_te = train_goals_models(feat_df)
+
+    g_prob = xgb_goals.predict_proba(Xg_te)[:, 1]
+    evaluate_binary("XGBoost — Over/Under 2.5", yg_te, g_prob, "Over 2.5", "Under 2.5")
+
+    b_prob = xgb_btts.predict_proba(Xb_te)[:, 1]
+    evaluate_binary("XGBoost — BTTS", yb_te, b_prob, "BTTS Yes", "BTTS No")
+
+    save_artifacts(xgb_model, xgb_goals, xgb_btts, elo_dict, snapshot, h2h_summary)
 
     print("\nDone.")
 

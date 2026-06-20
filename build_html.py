@@ -13,7 +13,7 @@ from datetime import datetime, date
 import pandas as pd
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from predictions import load_artifacts, predict_match
+from predictions import load_artifacts, predict_match, predict_goals
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -58,7 +58,8 @@ def build_data():
         home = row["home_team"]
         away = row["away_team"]
         neutral = bool(row["neutral"])
-        pred = predict_match(home, away, neutral=neutral, tournament_weight=1.0, artifacts=arts)
+        pred  = predict_match(home, away, neutral=neutral, tournament_weight=1.0, artifacts=arts)
+        goals = predict_goals(home, away, neutral=neutral, tournament_weight=1.0, artifacts=arts)
 
         # H2H from snapshot h2h_summary
         from predictions import get_h2h_features
@@ -84,6 +85,10 @@ def build_data():
             "h2h_dr":    round(dr_r * 100),
             "h2h_aw":    round(aw_r * 100),
             "h2h_n":     ng,
+            "over25":    round(goals.get("Over 2.5", 0) * 100, 1),
+            "under25":   round(goals.get("Under 2.5", 0) * 100, 1),
+            "btts_yes":  round(goals.get("BTTS Yes", 0) * 100, 1),
+            "btts_no":   round(goals.get("BTTS No", 0) * 100, 1),
         })
 
     return matches
@@ -269,6 +274,21 @@ HTML_TEMPLATE = """\
     .fill-dr { background: #d97706; }
     .fill-aw { background: #dc2626; }
 
+    /* ── Goals / BTTS pills ── */
+    .goals-row {
+      margin-top: 12px; padding-top: 10px; border-top: 1px solid #f0f0f0;
+      display: flex; align-items: center; justify-content: center;
+      gap: 6px; flex-wrap: wrap;
+    }
+    .goals-pill {
+      font-size: 0.7rem; border-radius: 6px; padding: 3px 9px; font-weight: 600;
+      border: 1px solid #e5e5e5; color: #555; background: #fafafa;
+      white-space: nowrap;
+    }
+    .goals-pill .g-label { color: #aaa; font-weight: 400; margin-right: 3px; }
+    .goals-pill.highlight { background: #f0fdf4; border-color: #bbf7d0; color: #16a34a; }
+    .goals-pill.highlight-red { background: #fef2f2; border-color: #fecaca; color: #dc2626; }
+
     /* ── H2H ── */
     .h2h-row {
       margin-top: 12px; padding-top: 10px; border-top: 1px solid #f0f0f0;
@@ -406,6 +426,16 @@ function barRow(label, pct, fillClass, isBest) {
     </div>`;
 }
 
+function goalsSection(m) {
+  const overCls  = m.over25  >= 55 ? 'highlight'     : m.over25  <= 40 ? 'highlight-red' : '';
+  const bttsCls  = m.btts_yes >= 55 ? 'highlight'    : m.btts_yes <= 35 ? 'highlight-red' : '';
+  return `
+    <div class="goals-row">
+      <span class="goals-pill ${overCls}"><span class="g-label">O/U 2.5</span>Over ${m.over25}% · Under ${m.under25}%</span>
+      <span class="goals-pill ${bttsCls}"><span class="g-label">BTTS</span>Yes ${m.btts_yes}% · No ${m.btts_no}%</span>
+    </div>`;
+}
+
 function h2hSection(m) {
   if (m.h2h_n === 0)
     return `<div class="h2h-row"><span class="h2h-none">No prior H2H in competitive play</span></div>`;
@@ -437,6 +467,7 @@ function card(m) {
         ${barRow('Draw',          m.draw,     'fill-dr', best === 'dr')}
         ${barRow(m.away + ' Win', m.away_win, 'fill-aw', best === 'aw')}
       </div>
+      ${goalsSection(m)}
       ${h2hSection(m)}
       <div class="elo-row">ELO · ${m.home} ${m.home_elo} · ${m.away} ${m.away_elo}</div>
     </div>`;

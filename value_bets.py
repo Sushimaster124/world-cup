@@ -21,7 +21,7 @@ from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from predictions import load_artifacts, predict_match
+from predictions import load_artifacts, predict_match, predict_goals
 
 # Load .env from project directory if present
 _env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
@@ -69,7 +69,7 @@ BOOKMAKER_LABELS = {
 
 
 # ── Odds API ──────────────────────────────────────────────────────────────────
-def fetch_odds(api_key: str, regions: str = "us", markets: str = "h2h") -> tuple:
+def fetch_odds(api_key: str, regions: str = "us", markets: str = "h2h,totals") -> tuple:
     params = urlencode({
         "apiKey":      api_key,
         "regions":     regions,
@@ -95,6 +95,43 @@ def remove_vig(outcomes: list) -> dict:
     raw = {o["name"]: 1.0 / o["price"] for o in outcomes}
     total = sum(raw.values())
     return {name: p / total for name, p in raw.items()}
+
+
+def totals_consensus_probs(bookmakers: list, point: float = 2.5) -> dict:
+    """Average vig-free over/under probs across bookmakers for a given line."""
+    all_probs: dict = {}
+    counts:    dict = {}
+    for bm in bookmakers:
+        for mkt in bm.get("markets", []):
+            if mkt["key"] != "totals":
+                continue
+            relevant = [o for o in mkt["outcomes"] if abs(o.get("point", 0) - point) < 0.01]
+            if len(relevant) != 2:
+                continue
+            vf = remove_vig(relevant)
+            for name, p in vf.items():
+                all_probs[name] = all_probs.get(name, 0.0) + p
+                counts[name]    = counts.get(name, 0) + 1
+    if not counts:
+        return {}
+    return {name: all_probs[name] / counts[name] for name in all_probs}
+
+
+def best_totals_odds(bookmakers: list, point: float = 2.5) -> dict:
+    """Best decimal price for Over/Under at a given line. Returns {name: (price, book)}."""
+    best: dict = {}
+    for bm in bookmakers:
+        label = BOOKMAKER_LABELS.get(bm["key"], bm.get("title", bm["key"]))
+        for mkt in bm.get("markets", []):
+            if mkt["key"] != "totals":
+                continue
+            for o in mkt["outcomes"]:
+                if abs(o.get("point", 0) - point) >= 0.01:
+                    continue
+                name, price = o["name"], o["price"]
+                if name not in best or price > best[name][0]:
+                    best[name] = (price, label)
+    return best
 
 
 def best_odds_per_outcome(bookmakers: list) -> dict:
@@ -171,9 +208,10 @@ def analyse(event: dict, arts: dict, min_edge: float):
     home = resolve(home_api, snap.keys())
     away = resolve(away_api, snap.keys())
 
-    model = predict_match(home, away, neutral=True, tournament_weight=1.0, artifacts=arts)
+    model        = predict_match(home, away, neutral=True, tournament_weight=1.0, artifacts=arts)
+    goals_model  = predict_goals(home, away, neutral=True, tournament_weight=1.0, artifacts=arts)
 
-    # Map market outcome names (team names) → our labels (Home Win / Draw / Away Win)
+    # ── 1X2 edges ──
     market = {}
     for api_name, prob in market_probs.items():
         if api_name == "Draw":
@@ -204,6 +242,7 @@ def analyse(event: dict, arts: dict, min_edge: float):
         if edge >= min_edge:
             price, book = best_mapped.get(outcome, (None, None))
             edges.append({
+                "market":   "1x2",
                 "outcome":  outcome,
                 "model_p":  round(model_p * 100, 1),
                 "market_p": round(market_p * 100, 1),
@@ -211,6 +250,32 @@ def analyse(event: dict, arts: dict, min_edge: float):
                 "best_odds": round(price, 2) if price else None,
                 "best_book": book,
             })
+
+    # ── Totals O/U 2.5 edges ──
+    totals_market = totals_consensus_probs(bms, point=2.5)
+    if totals_market and goals_model:
+        best_tot = best_totals_odds(bms, point=2.5)
+        # API names are "Over" / "Under"; our model labels are "Over 2.5" / "Under 2.5"
+        label_map = {"Over": "Over 2.5", "Under": "Under 2.5"}
+        for api_name, market_p in totals_market.items():
+            our_label = label_map.get(api_name)
+            if not our_label:
+                continue
+            model_p = goals_model.get(our_label, 0.0)
+            edge    = model_p - market_p
+            if edge >= min_edge:
+                price, book = best_tot.get(api_name, (None, None))
+                if price and price >= 100:   # skip suspended lines
+                    continue
+                edges.append({
+                    "market":   "totals",
+                    "outcome":  our_label,
+                    "model_p":  round(model_p * 100, 1),
+                    "market_p": round(market_p * 100, 1),
+                    "edge":     round(edge * 100, 1),
+                    "best_odds": round(price, 2) if price else None,
+                    "best_book": book,
+                })
 
     edges.sort(key=lambda x: -x["edge"])
 
@@ -220,6 +285,7 @@ def analyse(event: dict, arts: dict, min_edge: float):
         "commence":    event.get("commence_time", ""),
         "n_books":     len(bms),
         "model":       {k: round(v * 100, 1) for k, v in model.items()},
+        "goals_model": {k: round(v * 100, 1) for k, v in goals_model.items()},
         "market":      {k: round(v * 100, 1) for k, v in market.items()},
         "edges":       edges,
         "has_value":   len(edges) > 0,

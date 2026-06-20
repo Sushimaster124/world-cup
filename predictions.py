@@ -71,20 +71,23 @@ def predict_match(
 
     def team_stats(team: str):
         s = snapshot.get(team, {})
-        elo         = s.get("elo", DEFAULT_ELO)
-        form_5      = s.get("form_5", 0.5)
-        form_10     = s.get("form_10", 0.5)
-        goal_diff_5 = s.get("goal_diff_5", 0.0)
-        last        = s.get("last_date")
+        elo           = s.get("elo", DEFAULT_ELO)
+        form_5        = s.get("form_5", 0.5)
+        form_10       = s.get("form_10", 0.5)
+        goal_diff_5   = s.get("goal_diff_5", 0.0)
+        avg_scored_5  = s.get("avg_scored_5", 1.2)
+        avg_conceded_5 = s.get("avg_conceded_5", 1.2)
+        btts_rate_5   = s.get("btts_rate_5", 0.5)
+        last          = s.get("last_date")
         if last is not None:
             last_d    = last.date() if hasattr(last, "date") else last
             days_rest = min((today - last_d).days, 365)
         else:
             days_rest = DEFAULT_REST
-        return elo, form_5, form_10, goal_diff_5, days_rest
+        return elo, form_5, form_10, goal_diff_5, avg_scored_5, avg_conceded_5, btts_rate_5, days_rest
 
-    e_home, hf5, hf10, hgd5, h_rest = team_stats(home_team)
-    e_away, af5, af10, agd5, a_rest  = team_stats(away_team)
+    e_home, hf5, hf10, hgd5, h_scored5, h_conceded5, h_btts5, h_rest = team_stats(home_team)
+    e_away, af5, af10, agd5, a_scored5, a_conceded5, a_btts5, a_rest = team_stats(away_team)
     hw_r, dr_r, aw_r, ng = get_h2h_features(h2h_summary, home_team, away_team)
 
     # Build feature vector in the same order as FEATURES in pipeline.py
@@ -110,6 +113,89 @@ def predict_match(
         "Draw":     float(probs[1]),
         "Home Win": float(probs[2]),
     }
+
+
+# ── Goals / BTTS prediction ───────────────────────────────────────────────────
+def predict_goals(
+    home_team: str,
+    away_team: str,
+    neutral: bool = True,
+    tournament_weight: float = 1.0,
+    artifacts: dict = None,
+) -> dict:
+    """
+    Returns {
+      "Over 2.5": float, "Under 2.5": float,
+      "BTTS Yes": float, "BTTS No":  float
+    }
+    """
+    if artifacts is None:
+        artifacts = load_artifacts()
+
+    goals_model   = artifacts.get("goals_model")
+    btts_model    = artifacts.get("btts_model")
+    goals_feats   = artifacts.get("goals_features", [])
+    btts_feats    = artifacts.get("btts_features", [])
+    snapshot      = artifacts["snapshot"]
+    today         = date.today()
+
+    def team_stats(team: str):
+        s = snapshot.get(team, {})
+        elo           = s.get("elo", DEFAULT_ELO)
+        form_5        = s.get("form_5", 0.5)
+        goal_diff_5   = s.get("goal_diff_5", 0.0)
+        avg_scored_5  = s.get("avg_scored_5", 1.2)
+        avg_conceded_5 = s.get("avg_conceded_5", 1.2)
+        btts_rate_5   = s.get("btts_rate_5", 0.5)
+        return elo, form_5, goal_diff_5, avg_scored_5, avg_conceded_5, btts_rate_5
+
+    h_elo, hf5, hgd5, h_sc5, h_co5, h_bt5 = team_stats(home_team)
+    a_elo, af5, agd5, a_sc5, a_co5, a_bt5 = team_stats(away_team)
+
+    # GOALS_FEATURES order:
+    # elo_home, elo_away, elo_diff,
+    # home_form_5, away_form_5,
+    # home_avg_scored_5, home_avg_conceded_5,
+    # away_avg_scored_5, away_avg_conceded_5,
+    # home_goal_diff_5, away_goal_diff_5,
+    # is_neutral, tournament_weight
+    goals_vec = np.array([[
+        h_elo, a_elo, h_elo - a_elo,
+        hf5, af5,
+        h_sc5, h_co5,
+        a_sc5, a_co5,
+        hgd5, agd5,
+        int(neutral),
+        tournament_weight,
+    ]], dtype=float)
+
+    # BTTS_FEATURES order:
+    # elo_home, elo_away, elo_diff,
+    # home_form_5, away_form_5,
+    # home_avg_scored_5, home_avg_conceded_5,
+    # away_avg_scored_5, away_avg_conceded_5,
+    # home_btts_rate_5, away_btts_rate_5,
+    # is_neutral, tournament_weight
+    btts_vec = np.array([[
+        h_elo, a_elo, h_elo - a_elo,
+        hf5, af5,
+        h_sc5, h_co5,
+        a_sc5, a_co5,
+        h_bt5, a_bt5,
+        int(neutral),
+        tournament_weight,
+    ]], dtype=float)
+
+    result = {}
+    if goals_model is not None:
+        over_p = float(goals_model.predict_proba(goals_vec)[0][1])
+        result["Over 2.5"]  = over_p
+        result["Under 2.5"] = 1.0 - over_p
+    if btts_model is not None:
+        btts_p = float(btts_model.predict_proba(btts_vec)[0][1])
+        result["BTTS Yes"] = btts_p
+        result["BTTS No"]  = 1.0 - btts_p
+    return result
 
 
 # ── CLI ───────────────────────────────────────────────────────────────────────
