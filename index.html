@@ -81,8 +81,8 @@
 
     /* ── Hero header ── */
     .site-hero {
-      padding: 72px 0 52px;
-      margin-bottom: 48px;
+      padding: 44px 0 36px;
+      margin-bottom: 32px;
       border-bottom: 1px solid #e0e0e0;
     }
     .hero-eyebrow {
@@ -90,8 +90,8 @@
       text-transform: uppercase; color: #aaa; margin-bottom: 14px;
     }
     .hero-title {
-      font-size: clamp(3rem, 8vw, 6rem);
-      font-weight: 800; letter-spacing: -3px; line-height: 0.95;
+      font-size: clamp(2.4rem, 6vw, 4.2rem);
+      font-weight: 800; letter-spacing: -2px; line-height: 0.95;
       background: linear-gradient(120deg, #000 0%, #1a1a1a 40%, #16a34a 70%, #059669 100%);
       background-size: 200% auto;
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
@@ -403,7 +403,7 @@
   <header class="site-hero">
     <div class="hero-eyebrow">FIFA World Cup 2026</div>
     <h1 class="hero-title">Match<br>Picks</h1>
-    <p class="hero-sub">AI predictions for every game · updated daily · last refreshed June 20, 2026 at 04:48 PM</p>
+    <p class="hero-sub">AI predictions for every game · updated daily · last refreshed June 20, 2026 at 04:50 PM</p>
     <div class="hero-stats">
       <div class="hero-stat">
         <span class="stat-val">59.6%</span>
@@ -755,8 +755,8 @@ render();
     });
   });
 
-  // Fade section headers and date labels
-  document.querySelectorAll('.date-label, .bets-header, .bets-group-label, .site-hero').forEach(el => {
+  // Fade section headers, date labels, and accuracy card
+  document.querySelectorAll('.date-label, .bets-header, .bets-group-label, .site-hero, .acc-card').forEach(el => {
     el.classList.add('reveal');
     obs.observe(el);
   });
