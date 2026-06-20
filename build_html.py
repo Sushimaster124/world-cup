@@ -379,20 +379,20 @@ function toAmerican(decimal) {
 }
 
 function outcomePhrase(e) {
-  if (e.outcome === 'Home Win')  return `<strong>${e.home}</strong> wins`;
-  if (e.outcome === 'Away Win')  return `<strong>${e.away}</strong> wins`;
-  if (e.outcome === 'Draw')      return `<strong>${e.home}</strong> and <strong>${e.away}</strong> draw`;
-  if (e.outcome === 'Over 2.5')  return `this game goes <strong>Over 2.5 goals</strong>`;
-  if (e.outcome === 'Under 2.5') return `this game stays <strong>Under 2.5 goals</strong>`;
+  if (e.outcome === 'Home Win')  return `<strong>${e.home}</strong> to win`;
+  if (e.outcome === 'Away Win')  return `<strong>${e.away}</strong> to win`;
+  if (e.outcome === 'Draw')      return `<strong>${e.home} vs ${e.away}</strong> to draw`;
+  if (e.outcome === 'Over 2.5')  return `this game to go <strong>Over 2.5 goals</strong>`;
+  if (e.outcome === 'Under 2.5') return `this game to stay <strong>Under 2.5 goals</strong>`;
   return `<strong>${e.outcome}</strong>`;
 }
 
 function betStatement(e) {
   const odds = e.dk_odds || e.best_odds;
-  const book = e.dk_odds ? 'DK' : e.best_book;
+  const book = e.dk_odds ? 'DraftKings' : e.best_book;
   const am   = odds ? toAmerican(odds) : null;
-  const oddsStr = am ? ` The market doesn't — <strong>${book} ${am}</strong>.` : ` The market disagrees at <strong>${e.market_p}%</strong>.`;
-  return `There is a <strong>${e.model_p}%</strong> chance ${outcomePhrase(e)}.${oddsStr}`;
+  const oddsStr = am ? ` (${book} <strong>${am}</strong>)` : '';
+  return `Our model gives ${outcomePhrase(e)} a <strong>${e.model_p}%</strong> chance. The market prices it at <strong>${e.market_p}%</strong>${oddsStr} — a <strong>+${e.edge}%</strong> edge.`;
 }
 
 function betChip(e) {
