@@ -267,6 +267,12 @@
       gap: 8px; margin-bottom: 3px; flex-wrap: wrap;
     }
     .team-name { font-weight: 700; font-size: 0.9rem; color: #111; white-space: nowrap; }
+    .card-fav {
+      background: #16a34a; color: #fff;
+      border-radius: 4px; padding: 1px 5px;
+      font-size: 0.58rem; font-weight: 700; letter-spacing: 0.5px;
+      text-transform: uppercase; margin-left: 4px; vertical-align: middle;
+    }
     .flag { font-size: 1.1rem; }
     .vs {
       background: #f5f5f5; color: #bbb;
@@ -428,7 +434,7 @@
   <header class="site-hero">
     <div class="hero-eyebrow">FIFA World Cup 2026</div>
     <h1 class="hero-title">Match<br>Picks</h1>
-    <p class="hero-sub">AI predictions for every game · updated daily · last refreshed June 20, 2026 at 05:10 PM</p>
+    <p class="hero-sub">AI predictions for every game · updated daily · last refreshed June 20, 2026 at 05:11 PM</p>
     <div class="hero-stats">
       <div class="hero-stat">
         <span class="stat-val">59.6%</span>
@@ -574,19 +580,21 @@ function h2hSection(m) {
 }
 
 function card(m) {
-  const best  = m.home_win >= m.draw && m.home_win >= m.away_win ? 'hw'
-              : m.away_win >= m.draw ? 'aw' : 'dr';
-  const venue = m.neutral ? 'Neutral venue' : `${m.home} home`;
+  const best     = m.home_win >= m.draw && m.home_win >= m.away_win ? 'hw'
+                 : m.away_win >= m.draw ? 'aw' : 'dr';
+  const homeFav  = m.home_win > m.away_win && m.home_win > m.draw;
+  const awayFav  = m.away_win > m.home_win && m.away_win > m.draw;
+  const fav      = '<span class="card-fav">FAV</span>';
   return `
     <div class="card">
       <div class="teams">
         <span class="flag">${m.home_flag}</span>
-        <span class="team-name">${m.home}</span>
+        <span class="team-name">${m.home}${homeFav ? fav : ''}</span>
         <span class="vs">VS</span>
-        <span class="team-name">${m.away}</span>
+        <span class="team-name">${m.away}${awayFav ? fav : ''}</span>
         <span class="flag">${m.away_flag}</span>
       </div>
-      <div class="card-meta">${venue}</div>
+      <div class="card-meta">Model prediction</div>
       <div class="bars">
         ${barRow(m.home + ' Win', m.home_win, 'fill-hw', best === 'hw')}
         ${barRow('Draw',          m.draw,     'fill-dr', best === 'dr')}
