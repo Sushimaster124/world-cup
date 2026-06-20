@@ -344,13 +344,11 @@ function renderEdges() {
     const cls = e.outcome === 'Draw' ? 'obadge-dr'
               : e.outcome === 'Home Win' ? 'obadge-hw' : 'obadge-aw';
     const color = e.edge >= 20 ? '#22c55e' : e.edge >= 10 ? '#86efac' : '#bbf7d0';
-    const odds  = e.best_odds ? `${e.best_odds} <span class="e-book">@ ${e.best_book}</span>` : '—';
     return `<tr>
       <td class="e-rank">${i + 1}</td>
       <td class="e-match">${e.home}<span class="e-vs">vs</span>${e.away}</td>
       <td><span class="obadge ${cls}">${e.outcome}</span></td>
       <td class="e-edge" style="color:${color}">+${e.edge}%</td>
-      <td class="e-odds">${odds}</td>
     </tr>`;
   }).join('');
 
@@ -362,7 +360,7 @@ function renderEdges() {
     </div>
     <div class="edges-scroll">
       <table class="edges-table">
-        <thead><tr><th>#</th><th>Match</th><th>Bet</th><th>Edge</th><th>Best Odds</th></tr></thead>
+        <thead><tr><th>#</th><th>Match</th><th>Bet</th><th>Edge</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
     </div>
