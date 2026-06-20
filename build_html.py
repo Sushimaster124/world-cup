@@ -118,6 +118,7 @@ def load_edges(top_n=15):
                 "date":      match_date,
                 "outcome":   e["outcome"],
                 "model_p":   e["model_p"],
+                "market_p":  e.get("market_p", 0),
                 "edge":      e["edge"],
                 "best_odds": e["best_odds"],
                 "best_book": e["best_book"] or "",
@@ -167,75 +168,75 @@ HTML_TEMPLATE = """\
     }
 
     /* ── Best Bets chips ── */
-    .bets-section { margin-bottom: 40px; }
+    .bets-section { margin-bottom: 44px; }
     .bets-header {
-      display: flex; align-items: baseline; gap: 10px; margin-bottom: 18px;
+      display: flex; align-items: baseline; gap: 10px; margin-bottom: 20px;
     }
     .bets-title { font-size: 1.05rem; font-weight: 700; color: #111; }
     .bets-count { font-size: 0.78rem; color: #bbb; }
 
-    .bets-group-label {
-      font-size: 0.63rem; font-weight: 700; letter-spacing: 2px;
-      text-transform: uppercase; color: #bbb;
-      margin-bottom: 10px;
-    }
-    .bets-group-label.today-lbl { color: #111; }
-    .bets-group + .bets-group { margin-top: 24px; }
-
     .chips-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 14px;
     }
 
+    /* Base chip */
     .bet-chip {
       background: #fff;
       border: 1px solid #e5e5e5;
-      border-radius: 14px;
-      padding: 16px 18px 14px;
-      display: flex; flex-direction: column; gap: 10px;
-      transition: box-shadow 0.15s;
+      border-radius: 16px;
+      padding: 22px 22px 18px;
+      display: flex; flex-direction: column; gap: 14px;
+      transition: box-shadow 0.15s, transform 0.15s;
+      border-top-width: 4px;
     }
-    .bet-chip:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
-    .bet-chip.is-today { border-top: 2px solid #111; }
+    .bet-chip:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.09); transform: translateY(-2px); }
+
+    /* Color tiers — top border + background tint */
+    .chip-green  { border-top-color: #16a34a; background: #f8fff9; }
+    .chip-yellow { border-top-color: #d97706; background: #fffdf5; }
+    .chip-red    { border-top-color: #ef4444; background: #fff; opacity: 0.82; }
 
     .chip-top {
-      display: flex; align-items: center;
+      display: flex; align-items: flex-start;
       justify-content: space-between; gap: 8px;
     }
-    .chip-match { font-size: 0.8rem; font-weight: 600; color: #555; }
-    .chip-date-tag {
-      font-size: 0.6rem; font-weight: 700; letter-spacing: 0.5px;
-      text-transform: uppercase; border-radius: 4px;
-      padding: 2px 7px; white-space: nowrap; flex-shrink: 0;
-    }
-    .chip-date-tag.today { background: #111; color: #fff; }
-    .chip-date-tag.future { background: #f0f0f0; color: #888; }
+    .chip-match { font-size: 0.78rem; font-weight: 600; color: #888; line-height: 1.3; }
 
+    /* Statement — the hero */
     .chip-statement {
-      font-size: 0.92rem; color: #111; line-height: 1.45; font-weight: 400;
+      font-size: 1rem; color: #111; line-height: 1.55; font-weight: 400;
     }
-    .chip-statement strong { font-weight: 700; }
+    .chip-statement strong { font-weight: 700; color: #000; }
 
     .chip-bottom {
-      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-      margin-top: 2px;
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
     }
-    .chip-conf {
-      font-size: 0.6rem; font-weight: 700; letter-spacing: 0.5px;
-      text-transform: uppercase; border-radius: 4px; padding: 2px 7px;
+    .chip-edge {
+      font-size: 0.8rem; font-weight: 800; border-radius: 6px;
+      padding: 3px 10px; white-space: nowrap;
     }
-    .conf-strong { background: #f0fdf4; color: #16a34a; }
-    .conf-value  { background: #eff6ff; color: #2563eb; }
-    .conf-lean   { background: #f9fafb; color: #9ca3af; border: 1px solid #e5e5e5; }
-    .chip-edge   { font-size: 0.82rem; font-weight: 800; }
+    .chip-green  .chip-edge { background: #f0fdf4; color: #16a34a; }
+    .chip-yellow .chip-edge { background: #fffbeb; color: #d97706; }
+    .chip-red    .chip-edge { background: #fef2f2; color: #ef4444; }
+
     .chip-dk {
       margin-left: auto;
-      background: #f5f5f5; border-radius: 6px;
-      padding: 4px 11px; font-size: 0.82rem; font-weight: 700; color: #111;
+      background: #f5f5f5; border-radius: 8px;
+      padding: 5px 13px; font-size: 0.88rem; font-weight: 700; color: #111;
       white-space: nowrap;
     }
-    .chip-dk .dk-label { font-weight: 400; color: #999; font-size: 0.7rem; margin-right: 3px; }
+    .chip-dk .dk-label {
+      font-weight: 400; color: #999; font-size: 0.68rem;
+      display: block; margin-bottom: 1px;
+    }
+
+    .no-bets-today {
+      text-align: center; padding: 32px; color: #bbb;
+      font-size: 0.9rem; background: #fff;
+      border: 1px dashed #e5e5e5; border-radius: 16px;
+    }
 
     .bets-footer { margin-top: 16px; font-size: 0.67rem; color: #ccc; }
 
@@ -377,43 +378,36 @@ function toAmerican(decimal) {
     : '−' + Math.round(100 / (decimal - 1));
 }
 
-function betStatement(e) {
-  const p = e.model_p;
-  if (e.outcome === 'Home Win')  return `With <strong>${p}%</strong> confidence, <strong>${e.home}</strong> wins`;
-  if (e.outcome === 'Away Win')  return `With <strong>${p}%</strong> confidence, <strong>${e.away}</strong> wins`;
-  if (e.outcome === 'Draw')      return `With <strong>${p}%</strong> confidence, <strong>${e.home}</strong> and <strong>${e.away}</strong> draw`;
-  if (e.outcome === 'Over 2.5')  return `With <strong>${p}%</strong> confidence, this game goes <strong>Over 2.5</strong> goals`;
-  if (e.outcome === 'Under 2.5') return `With <strong>${p}%</strong> confidence, this game stays <strong>Under 2.5</strong> goals`;
-  return `With <strong>${p}%</strong> confidence — <strong>${e.outcome}</strong>`;
+function outcomePhrase(e) {
+  if (e.outcome === 'Home Win')  return `<strong>${e.home}</strong> wins`;
+  if (e.outcome === 'Away Win')  return `<strong>${e.away}</strong> wins`;
+  if (e.outcome === 'Draw')      return `<strong>${e.home}</strong> and <strong>${e.away}</strong> draw`;
+  if (e.outcome === 'Over 2.5')  return `this game goes <strong>Over 2.5 goals</strong>`;
+  if (e.outcome === 'Under 2.5') return `this game stays <strong>Under 2.5 goals</strong>`;
+  return `<strong>${e.outcome}</strong>`;
 }
 
-function betChip(e, isToday) {
-  const conf    = e.edge >= 15 ? ['Strong', 'conf-strong']
-                : e.edge >= 8  ? ['Value',  'conf-value']
-                :                ['Lean',   'conf-lean'];
-  const edgeClr = e.edge >= 15 ? '#16a34a' : e.edge >= 8 ? '#2563eb' : '#9ca3af';
-  const dateTag = isToday
-    ? `<span class="chip-date-tag today">Today</span>`
-    : `<span class="chip-date-tag future">${fmtShort(e.date)}</span>`;
+function betStatement(e) {
+  const odds = e.dk_odds || e.best_odds;
+  const book = e.dk_odds ? 'DK' : e.best_book;
+  const am   = odds ? toAmerican(odds) : null;
+  const oddsStr = am ? ` The market doesn't — <strong>${book} ${am}</strong>.` : ` The market disagrees at <strong>${e.market_p}%</strong>.`;
+  return `There is a <strong>${e.model_p}%</strong> chance ${outcomePhrase(e)}.${oddsStr}`;
+}
 
-  let dkHtml = '';
-  if (e.dk_odds) {
-    dkHtml = `<span class="chip-dk"><span class="dk-label">DK</span>${toAmerican(e.dk_odds)}</span>`;
-  } else if (e.best_odds) {
-    dkHtml = `<span class="chip-dk"><span class="dk-label">${e.best_book}</span>${toAmerican(e.best_odds)}</span>`;
-  }
+function betChip(e) {
+  const tierCls = e.edge >= 15 ? 'chip-green' : e.edge >= 8 ? 'chip-yellow' : 'chip-red';
+  const edgeLbl = e.edge >= 15 ? 'Strong edge' : e.edge >= 8 ? 'Good edge' : 'Lean';
 
   return `
-    <div class="bet-chip${isToday ? ' is-today' : ''}">
+    <div class="bet-chip ${tierCls}">
       <div class="chip-top">
         <span class="chip-match">${e.home} vs ${e.away}</span>
-        ${dateTag}
       </div>
       <div class="chip-statement">${betStatement(e)}</div>
       <div class="chip-bottom">
-        <span class="chip-conf ${conf[1]}">${conf[0]}</span>
-        <span class="chip-edge" style="color:${edgeClr}">+${e.edge}% edge</span>
-        ${dkHtml}
+        <span class="chip-edge">+${e.edge}% · ${edgeLbl}</span>
+        ${(e.dk_odds || e.best_odds) ? `<span class="chip-dk"><span class="dk-label">${e.dk_odds ? 'DraftKings' : e.best_book}</span>${toAmerican(e.dk_odds || e.best_odds)}</span>` : ''}
       </div>
     </div>`;
 }
@@ -422,34 +416,20 @@ function renderEdges() {
   const sec = document.getElementById('edges-section');
   if (!VALUE_BETS || VALUE_BETS.length === 0) { sec.style.display = 'none'; return; }
 
-  const today        = todayISO();
-  const todayBets    = VALUE_BETS.filter(e => e.date === today);
-  const upcomingBets = VALUE_BETS.filter(e => e.date !== today);
+  const today     = todayISO();
+  const todayBets = VALUE_BETS.filter(e => e.date === today);
 
-  let inner = `
+  const chipsHtml = todayBets.length
+    ? `<div class="chips-grid">${todayBets.map(e => betChip(e)).join('')}</div>`
+    : `<div class="no-bets-today">No value edges found for today's matches.</div>`;
+
+  sec.innerHTML = `
     <div class="bets-header">
-      <span class="bets-title">Best Bets</span>
-      <span class="bets-count">${VALUE_BETS.length} edges vs market</span>
-    </div>`;
-
-  if (todayBets.length) {
-    inner += `
-    <div class="bets-group">
-      <div class="bets-group-label today-lbl">Today</div>
-      <div class="chips-grid">${todayBets.map(e => betChip(e, true)).join('')}</div>
-    </div>`;
-  }
-
-  if (upcomingBets.length) {
-    inner += `
-    <div class="bets-group" style="margin-top:${todayBets.length ? '28px' : '0'}">
-      <div class="bets-group-label">Upcoming · ranked by edge</div>
-      <div class="chips-grid">${upcomingBets.map(e => betChip(e, false)).join('')}</div>
-    </div>`;
-  }
-
-  inner += `<p class="bets-footer">Model probability vs vig-free consensus · bet responsibly</p>`;
-  sec.innerHTML = inner;
+      <span class="bets-title">Today's Best Bets</span>
+      <span class="bets-count">${todayBets.length} edge${todayBets.length !== 1 ? 's' : ''} found</span>
+    </div>
+    ${chipsHtml}
+    <p class="bets-footer">Model probability vs vig-free market consensus · bet responsibly</p>`;
 }
 
 function fmtDate(iso) {
