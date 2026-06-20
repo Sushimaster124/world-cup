@@ -201,6 +201,23 @@ def load_edges(top_n=15):
         for e in r.get("edges", []):
             if not e["best_odds"] or e["best_odds"] >= 100:
                 continue   # drop suspended/placeholder lines
+
+            mp   = e["model_p"] / 100.0
+            odds = e["best_odds"]
+            mkt  = e.get("market", "1x2")
+
+            ev = fair_odds = None
+            kelly_val = half_kelly = 0.0
+            if odds and odds > 1 and mp > 0:
+                ev         = round((odds - 1) * mp - (1 - mp), 3)
+                kr         = (odds * mp - 1) / (odds - 1)
+                kelly_val  = round(max(kr, 0) * 100, 1)
+                half_kelly = round(kelly_val / 2, 1)
+                fair_odds  = round(1 / mp, 2)
+
+            baseline  = 1/3 if mkt == "1x2" else 0.5
+            certainty = round((mp - baseline) * 100, 1)
+
             entry = {
                 "home":       r["home"],
                 "away":       r["away"],
@@ -209,14 +226,14 @@ def load_edges(top_n=15):
                 "model_p":    e["model_p"],
                 "market_p":   e.get("market_p", 0),
                 "edge":       e["edge"],
-                "best_odds":  e["best_odds"],
+                "best_odds":  odds,
                 "best_book":  e["best_book"] or "",
                 "dk_odds":    e.get("dk_odds"),
-                "ev":         e.get("ev"),
-                "kelly":      e.get("kelly", 0),
-                "half_kelly": e.get("half_kelly", 0),
-                "fair_odds":  e.get("fair_odds"),
-                "certainty":  e.get("certainty", 0),
+                "ev":         ev,
+                "kelly":      kelly_val,
+                "half_kelly": half_kelly,
+                "fair_odds":  fair_odds,
+                "certainty":  certainty,
             }
             if match_date == today_str:
                 today_flat.append(entry)
