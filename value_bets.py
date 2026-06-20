@@ -134,6 +134,32 @@ def best_totals_odds(bookmakers: list, point: float = 2.5) -> dict:
     return best
 
 
+def dk_h2h_odds(bookmakers: list) -> dict:
+    """DraftKings 1X2 decimal odds only. Returns {api_outcome_name: price}."""
+    for bm in bookmakers:
+        if bm["key"] != "draftkings":
+            continue
+        for mkt in bm.get("markets", []):
+            if mkt["key"] == "h2h":
+                return {o["name"]: o["price"] for o in mkt["outcomes"]}
+    return {}
+
+
+def dk_totals_odds(bookmakers: list, point: float = 2.5) -> dict:
+    """DraftKings Over/Under decimal odds for given line. Returns {name: price}."""
+    for bm in bookmakers:
+        if bm["key"] != "draftkings":
+            continue
+        for mkt in bm.get("markets", []):
+            if mkt["key"] != "totals":
+                continue
+            relevant = {o["name"]: o["price"] for o in mkt["outcomes"]
+                        if abs(o.get("point", 0) - point) < 0.01}
+            if relevant:
+                return relevant
+    return {}
+
+
 def best_odds_per_outcome(bookmakers: list) -> dict:
     """
     For each outcome (home / draw / away) find the bookmaker offering
@@ -234,6 +260,16 @@ def analyse(event: dict, arts: dict, min_edge: float):
         else:
             best_mapped["Away Win"] = (price, book)
 
+    dk_h2h = dk_h2h_odds(bms)
+    dk_mapped = {}
+    for api_name, price in dk_h2h.items():
+        if api_name == "Draw":
+            dk_mapped["Draw"] = price
+        elif api_name == home_api or api_name == home:
+            dk_mapped["Home Win"] = price
+        else:
+            dk_mapped["Away Win"] = price
+
     edges = []
     for outcome in ("Home Win", "Draw", "Away Win"):
         model_p  = model.get(outcome, 0.0)
@@ -241,6 +277,7 @@ def analyse(event: dict, arts: dict, min_edge: float):
         edge     = model_p - market_p
         if edge >= min_edge:
             price, book = best_mapped.get(outcome, (None, None))
+            dk_price    = dk_mapped.get(outcome)
             edges.append({
                 "market":   "1x2",
                 "outcome":  outcome,
@@ -249,13 +286,14 @@ def analyse(event: dict, arts: dict, min_edge: float):
                 "edge":     round(edge * 100, 1),
                 "best_odds": round(price, 2) if price else None,
                 "best_book": book,
+                "dk_odds":   round(dk_price, 2) if dk_price else None,
             })
 
     # ── Totals O/U 2.5 edges ──
     totals_market = totals_consensus_probs(bms, point=2.5)
     if totals_market and goals_model:
         best_tot = best_totals_odds(bms, point=2.5)
-        # API names are "Over" / "Under"; our model labels are "Over 2.5" / "Under 2.5"
+        dk_tot   = dk_totals_odds(bms, point=2.5)
         label_map = {"Over": "Over 2.5", "Under": "Under 2.5"}
         for api_name, market_p in totals_market.items():
             our_label = label_map.get(api_name)
@@ -265,8 +303,9 @@ def analyse(event: dict, arts: dict, min_edge: float):
             edge    = model_p - market_p
             if edge >= min_edge:
                 price, book = best_tot.get(api_name, (None, None))
-                if price and price >= 100:   # skip suspended lines
+                if price and price >= 100:
                     continue
+                dk_price = dk_tot.get(api_name)
                 edges.append({
                     "market":   "totals",
                     "outcome":  our_label,
@@ -275,6 +314,7 @@ def analyse(event: dict, arts: dict, min_edge: float):
                     "edge":     round(edge * 100, 1),
                     "best_odds": round(price, 2) if price else None,
                     "best_book": book,
+                    "dk_odds":   round(dk_price, 2) if dk_price else None,
                 })
 
     edges.sort(key=lambda x: -x["edge"])
