@@ -98,11 +98,15 @@ def load_edges(top_n=15):
         data = json.load(f)
     flat = []
     for r in data.get("results", []):
+        # Extract date from ISO commence string e.g. "2026-06-20T17:00:00Z"
+        commence = r.get("commence", "")
+        match_date = commence[:10] if commence else ""
         for e in r.get("edges", []):
             if e["best_odds"] and e["best_odds"] < 100:   # drop suspended/placeholder lines
                 flat.append({
                     "home":      r["home"],
                     "away":      r["away"],
+                    "date":      match_date,
                     "outcome":   e["outcome"],
                     "model_p":   e["model_p"],
                     "edge":      e["edge"],
@@ -188,6 +192,11 @@ HTML_TEMPLATE = """\
     .obadge-hw { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
     .obadge-dr { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
     .obadge-aw { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+    .edges-section-label {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: #aaa;
+      margin-bottom: 10px; margin-top: 4px;
+    }
     .edges-footer { margin-top: 12px; font-size: 0.68rem; color: #bbb; text-align: center; }
 
     /* ── Date section ── */
@@ -297,11 +306,12 @@ HTML_TEMPLATE = """\
 const MATCHES    = __DATA__;
 const VALUE_BETS = __VALUE_BETS__;
 
-function renderEdges() {
-  const sec = document.getElementById('edges-section');
-  if (!VALUE_BETS || VALUE_BETS.length === 0) { sec.style.display = 'none'; return; }
+function todayISO() {
+  return new Date().toISOString().slice(0, 10);
+}
 
-  const rows = VALUE_BETS.map((e, i) => {
+function edgeRows(list, startIdx) {
+  return list.map((e, i) => {
     const cls = e.outcome === 'Draw'     ? 'obadge-dr'
               : e.outcome === 'Home Win' ? 'obadge-hw' : 'obadge-aw';
     const edgeColor = e.edge >= 20 ? '#16a34a' : e.edge >= 10 ? '#2563eb' : '#555';
@@ -312,7 +322,7 @@ function renderEdges() {
       ? `${e.best_odds} <span class="e-book">@ ${e.best_book}</span>`
       : '—';
     return `<tr>
-      <td class="e-rank">${i + 1}</td>
+      <td class="e-rank">${startIdx + i + 1}</td>
       <td class="e-match">${e.home}<span class="e-vs">vs</span>${e.away}</td>
       <td><span class="obadge ${cls}">${e.outcome}</span></td>
       <td class="e-wesay">${weSay}</td>
@@ -320,22 +330,50 @@ function renderEdges() {
       <td class="e-odds">${oddsStr}</td>
     </tr>`;
   }).join('');
+}
 
-  sec.innerHTML = `
-    <div class="edges-header">
-      <span>🔥</span>
-      <span class="edges-title">Best Value Edges</span>
-      <span class="edges-sub">${VALUE_BETS.length} bets vs market</span>
-    </div>
+function edgeTable(list, startIdx) {
+  if (!list.length) return '';
+  return `
     <div class="edges-scroll">
       <table class="edges-table">
         <thead>
           <tr><th>#</th><th>Match</th><th>Bet</th><th>We Say</th><th>Edge</th><th>Odds</th></tr>
         </thead>
-        <tbody>${rows}</tbody>
+        <tbody>${edgeRows(list, startIdx)}</tbody>
       </table>
-    </div>
-    <div class="edges-footer">Model probability vs consensus bookmaker line · bet responsibly</div>`;
+    </div>`;
+}
+
+function renderEdges() {
+  const sec = document.getElementById('edges-section');
+  if (!VALUE_BETS || VALUE_BETS.length === 0) { sec.style.display = 'none'; return; }
+
+  const today    = todayISO();
+  const todayBets    = VALUE_BETS.filter(e => e.date === today);
+  const upcomingBets = VALUE_BETS.filter(e => e.date !== today);
+
+  let inner = `
+    <div class="edges-header">
+      <span>🔥</span>
+      <span class="edges-title">Best Value Edges</span>
+      <span class="edges-sub">${VALUE_BETS.length} bets vs market</span>
+    </div>`;
+
+  if (todayBets.length) {
+    inner += `
+    <div class="edges-section-label">Today's Best Edges</div>
+    ${edgeTable(todayBets, 0)}`;
+  }
+
+  if (upcomingBets.length) {
+    inner += `
+    <div class="edges-section-label" style="margin-top:${todayBets.length ? '20px' : '0'}">Upcoming Edges</div>
+    ${edgeTable(upcomingBets, todayBets.length)}`;
+  }
+
+  inner += `<div class="edges-footer">Model probability vs consensus bookmaker line · bet responsibly</div>`;
+  sec.innerHTML = inner;
 }
 
 function fmtDate(iso) {

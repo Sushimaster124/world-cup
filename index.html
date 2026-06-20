@@ -72,6 +72,11 @@
     .obadge-hw { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
     .obadge-dr { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
     .obadge-aw { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+    .edges-section-label {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: #aaa;
+      margin-bottom: 10px; margin-top: 4px;
+    }
     .edges-footer { margin-top: 12px; font-size: 0.68rem; color: #bbb; text-align: center; }
 
     /* ── Date section ── */
@@ -164,7 +169,7 @@
   <header class="site-header">
     <h1>⚽ 2026 World Cup Predictions</h1>
     <p class="sub">XGBoost · 12,426 competitive matches · 59.6% test accuracy</p>
-    <span class="updated-badge">Updated June 20, 2026 at 03:18 PM</span>
+    <span class="updated-badge">Updated June 20, 2026 at 03:20 PM</span>
   </header>
 
   <section class="edges-card" id="edges-section"></section>
@@ -179,13 +184,14 @@
 </div>
 <script>
 const MATCHES    = [{"date": "2026-06-20", "home": "Germany", "away": "Ivory Coast", "home_flag": "🇩🇪", "away_flag": "🇨🇮", "neutral": true, "home_win": 56.2, "draw": 25.3, "away_win": 18.5, "home_elo": 1851, "away_elo": 1733, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-20", "home": "Ecuador", "away": "Curaçao", "home_flag": "🇪🇨", "away_flag": "🇨🇼", "neutral": true, "home_win": 65.2, "draw": 22.6, "away_win": 12.2, "home_elo": 1751, "away_elo": 1504, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-20", "home": "Netherlands", "away": "Sweden", "home_flag": "🇳🇱", "away_flag": "🇸🇪", "neutral": true, "home_win": 48.8, "draw": 31.3, "away_win": 19.8, "home_elo": 1835, "away_elo": 1690, "h2h_hw": 25, "h2h_dr": 75, "h2h_aw": 0, "h2h_n": 4}, {"date": "2026-06-20", "home": "Tunisia", "away": "Japan", "home_flag": "🇹🇳", "away_flag": "🇯🇵", "neutral": true, "home_win": 7.8, "draw": 24.9, "away_win": 67.3, "home_elo": 1644, "away_elo": 1817, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 100, "h2h_n": 1}, {"date": "2026-06-21", "home": "Belgium", "away": "Iran", "home_flag": "🇧🇪", "away_flag": "🇮🇷", "neutral": true, "home_win": 28.6, "draw": 37.3, "away_win": 34.1, "home_elo": 1807, "away_elo": 1778, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-21", "home": "New Zealand", "away": "Egypt", "home_flag": "🇳🇿", "away_flag": "🇪🇬", "neutral": true, "home_win": 26.8, "draw": 28.1, "away_win": 45.1, "home_elo": 1618, "away_elo": 1714, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-21", "home": "Spain", "away": "Saudi Arabia", "home_flag": "🇪🇸", "away_flag": "🇸🇦", "neutral": true, "home_win": 59.3, "draw": 31.7, "away_win": 9.0, "home_elo": 1920, "away_elo": 1647, "h2h_hw": 100, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 1}, {"date": "2026-06-21", "home": "Uruguay", "away": "Cape Verde", "home_flag": "🇺🇾", "away_flag": "🇨🇻", "neutral": true, "home_win": 52.5, "draw": 27.2, "away_win": 20.3, "home_elo": 1780, "away_elo": 1594, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-22", "home": "Jordan", "away": "Algeria", "home_flag": "🇯🇴", "away_flag": "🇩🇿", "neutral": true, "home_win": 16.8, "draw": 29.4, "away_win": 53.8, "home_elo": 1621, "away_elo": 1726, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-22", "home": "Argentina", "away": "Austria", "home_flag": "🇦🇷", "away_flag": "🇦🇹", "neutral": true, "home_win": 50.7, "draw": 23.9, "away_win": 25.5, "home_elo": 1957, "away_elo": 1711, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-22", "home": "France", "away": "Iraq", "home_flag": "🇫🇷", "away_flag": "🇮🇶", "neutral": true, "home_win": 55.7, "draw": 26.7, "away_win": 17.6, "home_elo": 1914, "away_elo": 1657, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-22", "home": "Norway", "away": "Senegal", "home_flag": "🇳🇴", "away_flag": "🇸🇳", "neutral": true, "home_win": 30.9, "draw": 30.6, "away_win": 38.6, "home_elo": 1716, "away_elo": 1756, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-23", "home": "Portugal", "away": "Uzbekistan", "home_flag": "🇵🇹", "away_flag": "🇺🇿", "neutral": true, "home_win": 45.0, "draw": 30.4, "away_win": 24.6, "home_elo": 1826, "away_elo": 1690, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-23", "home": "Colombia", "away": "DR Congo", "home_flag": "🇨🇴", "away_flag": "🇨🇩", "neutral": true, "home_win": 55.4, "draw": 26.1, "away_win": 18.5, "home_elo": 1833, "away_elo": 1638, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-23", "home": "England", "away": "Ghana", "home_flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "away_flag": "🇬🇭", "neutral": true, "home_win": 66.4, "draw": 20.5, "away_win": 13.1, "home_elo": 1884, "away_elo": 1615, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-23", "home": "Panama", "away": "Croatia", "home_flag": "🇵🇦", "away_flag": "🇭🇷", "neutral": true, "home_win": 12.6, "draw": 35.9, "away_win": 51.5, "home_elo": 1652, "away_elo": 1792, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-24", "home": "Morocco", "away": "Haiti", "home_flag": "🇲🇦", "away_flag": "🇭🇹", "neutral": true, "home_win": 54.6, "draw": 32.7, "away_win": 12.7, "home_elo": 1818, "away_elo": 1557, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-24", "home": "Scotland", "away": "Brazil", "home_flag": "🏴󠁧󠁢󠁳󠁣󠁴󠁿", "away_flag": "🇧🇷", "neutral": true, "home_win": 8.6, "draw": 22.7, "away_win": 68.7, "home_elo": 1666, "away_elo": 1863, "h2h_hw": 0, "h2h_dr": 25, "h2h_aw": 75, "h2h_n": 4}, {"date": "2026-06-24", "home": "Bosnia and Herzegovina", "away": "Qatar", "home_flag": "🇧🇦", "away_flag": "🇶🇦", "neutral": true, "home_win": 23.1, "draw": 34.0, "away_win": 42.9, "home_elo": 1592, "away_elo": 1617, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-24", "home": "South Africa", "away": "South Korea", "home_flag": "🇿🇦", "away_flag": "🇰🇷", "neutral": true, "home_win": 11.0, "draw": 33.6, "away_win": 55.5, "home_elo": 1616, "away_elo": 1767, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-24", "home": "Mexico", "away": "Czech Republic", "home_flag": "🇲🇽", "away_flag": "🇨🇿", "neutral": false, "home_win": 56.5, "draw": 26.6, "away_win": 16.8, "home_elo": 1798, "away_elo": 1656, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-24", "home": "Canada", "away": "Switzerland", "home_flag": "🇨🇦", "away_flag": "🇨🇭", "neutral": false, "home_win": 20.0, "draw": 38.6, "away_win": 41.4, "home_elo": 1705, "away_elo": 1770, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-25", "home": "Tunisia", "away": "Netherlands", "home_flag": "🇹🇳", "away_flag": "🇳🇱", "neutral": true, "home_win": 5.5, "draw": 16.0, "away_win": 78.5, "home_elo": 1644, "away_elo": 1835, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-25", "home": "United States", "away": "Turkey", "home_flag": "🇺🇸", "away_flag": "🇹🇷", "neutral": false, "home_win": 34.9, "draw": 43.0, "away_win": 22.1, "home_elo": 1748, "away_elo": 1721, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 100, "h2h_n": 1}, {"date": "2026-06-25", "home": "Paraguay", "away": "Australia", "home_flag": "🇵🇾", "away_flag": "🇦🇺", "neutral": true, "home_win": 12.6, "draw": 34.7, "away_win": 52.7, "home_elo": 1673, "away_elo": 1767, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-25", "home": "Curaçao", "away": "Ivory Coast", "home_flag": "🇨🇼", "away_flag": "🇨🇮", "neutral": true, "home_win": 7.5, "draw": 19.3, "away_win": 73.2, "home_elo": 1504, "away_elo": 1733, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-25", "home": "Ecuador", "away": "Germany", "home_flag": "🇪🇨", "away_flag": "🇩🇪", "neutral": true, "home_win": 13.0, "draw": 18.6, "away_win": 68.5, "home_elo": 1751, "away_elo": 1851, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 100, "h2h_n": 1}, {"date": "2026-06-25", "home": "Japan", "away": "Sweden", "home_flag": "🇯🇵", "away_flag": "🇸🇪", "neutral": true, "home_win": 42.0, "draw": 34.5, "away_win": 23.4, "home_elo": 1817, "away_elo": 1690, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-26", "home": "Senegal", "away": "Iraq", "home_flag": "🇸🇳", "away_flag": "🇮🇶", "neutral": true, "home_win": 37.2, "draw": 35.9, "away_win": 26.8, "home_elo": 1756, "away_elo": 1657, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-26", "home": "Norway", "away": "France", "home_flag": "🇳🇴", "away_flag": "🇫🇷", "neutral": true, "home_win": 11.2, "draw": 20.1, "away_win": 68.7, "home_elo": 1716, "away_elo": 1914, "h2h_hw": 17, "h2h_dr": 17, "h2h_aw": 67, "h2h_n": 6}, {"date": "2026-06-26", "home": "Uruguay", "away": "Spain", "home_flag": "🇺🇾", "away_flag": "🇪🇸", "neutral": true, "home_win": 12.3, "draw": 23.0, "away_win": 64.7, "home_elo": 1780, "away_elo": 1920, "h2h_hw": 0, "h2h_dr": 67, "h2h_aw": 33, "h2h_n": 3}, {"date": "2026-06-26", "home": "New Zealand", "away": "Belgium", "home_flag": "🇳🇿", "away_flag": "🇧🇪", "neutral": true, "home_win": 12.5, "draw": 30.6, "away_win": 56.8, "home_elo": 1618, "away_elo": 1807, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-26", "home": "Egypt", "away": "Iran", "home_flag": "🇪🇬", "away_flag": "🇮🇷", "neutral": true, "home_win": 16.4, "draw": 36.1, "away_win": 47.5, "home_elo": 1714, "away_elo": 1778, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-26", "home": "Cape Verde", "away": "Saudi Arabia", "home_flag": "🇨🇻", "away_flag": "🇸🇦", "neutral": true, "home_win": 23.5, "draw": 33.0, "away_win": 43.5, "home_elo": 1594, "away_elo": 1647, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-27", "home": "DR Congo", "away": "Uzbekistan", "home_flag": "🇨🇩", "away_flag": "🇺🇿", "neutral": true, "home_win": 18.3, "draw": 32.6, "away_win": 49.1, "home_elo": 1638, "away_elo": 1690, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-27", "home": "Colombia", "away": "Portugal", "home_flag": "🇨🇴", "away_flag": "🇵🇹", "neutral": true, "home_win": 25.4, "draw": 31.1, "away_win": 43.5, "home_elo": 1833, "away_elo": 1826, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-27", "home": "Panama", "away": "England", "home_flag": "🇵🇦", "away_flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "neutral": true, "home_win": 6.0, "draw": 14.9, "away_win": 79.1, "home_elo": 1652, "away_elo": 1884, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 100, "h2h_n": 1}, {"date": "2026-06-27", "home": "Algeria", "away": "Austria", "home_flag": "🇩🇿", "away_flag": "🇦🇹", "neutral": true, "home_win": 23.0, "draw": 34.8, "away_win": 42.2, "home_elo": 1726, "away_elo": 1711, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 100, "h2h_n": 1}, {"date": "2026-06-27", "home": "Jordan", "away": "Argentina", "home_flag": "🇯🇴", "away_flag": "🇦🇷", "neutral": true, "home_win": 4.0, "draw": 14.1, "away_win": 81.9, "home_elo": 1621, "away_elo": 1957, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-27", "home": "Croatia", "away": "Ghana", "home_flag": "🇭🇷", "away_flag": "🇬🇭", "neutral": true, "home_win": 51.7, "draw": 27.4, "away_win": 20.9, "home_elo": 1792, "away_elo": 1615, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}];
-const VALUE_BETS = [{"home": "Bosnia and Herzegovina", "away": "Qatar", "outcome": "Away Win", "model_p": 42.9, "edge": 29.3, "best_odds": 8.0, "best_book": "Casumo"}, {"home": "Paraguay", "away": "Australia", "outcome": "Away Win", "model_p": 52.7, "edge": 28.5, "best_odds": 4.3, "best_book": "Betfair"}, {"home": "Egypt", "away": "Iran", "outcome": "Away Win", "model_p": 47.5, "edge": 22.9, "best_odds": 4.1, "best_book": "Tipico"}, {"home": "Spain", "away": "Saudi Arabia", "outcome": "Draw", "model_p": 31.7, "edge": 22.3, "best_odds": 12.0, "best_book": "Sky Bet"}, {"home": "Belgium", "away": "Iran", "outcome": "Away Win", "model_p": 34.1, "edge": 21.8, "best_odds": 9.0, "best_book": "Unibet (NL)"}, {"home": "DR Congo", "away": "Uzbekistan", "outcome": "Away Win", "model_p": 49.1, "edge": 20.9, "best_odds": 3.6, "best_book": "Coolbet"}, {"home": "Morocco", "away": "Haiti", "outcome": "Draw", "model_p": 32.7, "edge": 18.7, "best_odds": 7.6, "best_book": "Betfair"}, {"home": "France", "away": "Iraq", "outcome": "Draw", "model_p": 26.7, "edge": 18.3, "best_odds": 13.5, "best_book": "1xBet"}, {"home": "Portugal", "away": "Uzbekistan", "outcome": "Away Win", "model_p": 24.6, "edge": 18.2, "best_odds": 19.5, "best_book": "1xBet"}, {"home": "Senegal", "away": "Iraq", "outcome": "Draw", "model_p": 35.9, "edge": 18.2, "best_odds": 5.8, "best_book": "Tipico"}, {"home": "Senegal", "away": "Iraq", "outcome": "Away Win", "model_p": 26.8, "edge": 17.8, "best_odds": 12.0, "best_book": "Coolbet"}, {"home": "Belgium", "away": "Iran", "outcome": "Draw", "model_p": 37.3, "edge": 16.7, "best_odds": 4.9, "best_book": "Unibet (NL)"}, {"home": "Portugal", "away": "Uzbekistan", "outcome": "Draw", "model_p": 30.4, "edge": 16.4, "best_odds": 7.6, "best_book": "Unibet (FR)"}, {"home": "Norway", "away": "France", "outcome": "Away Win", "model_p": 68.7, "edge": 16.2, "best_odds": 1.85, "best_book": "BetOnline"}, {"home": "Turkey", "away": "United States", "outcome": "Draw", "model_p": 39.9, "edge": 15.8, "best_odds": 4.3, "best_book": "Winamax (DE)"}];
+const VALUE_BETS = [{"home": "Bosnia and Herzegovina", "away": "Qatar", "date": "2026-06-24", "outcome": "Away Win", "model_p": 42.9, "edge": 29.3, "best_odds": 8.0, "best_book": "Casumo"}, {"home": "Paraguay", "away": "Australia", "date": "2026-06-26", "outcome": "Away Win", "model_p": 52.7, "edge": 28.5, "best_odds": 4.3, "best_book": "Betfair"}, {"home": "Egypt", "away": "Iran", "date": "2026-06-27", "outcome": "Away Win", "model_p": 47.5, "edge": 22.9, "best_odds": 4.1, "best_book": "Tipico"}, {"home": "Spain", "away": "Saudi Arabia", "date": "2026-06-21", "outcome": "Draw", "model_p": 31.7, "edge": 22.3, "best_odds": 12.0, "best_book": "Sky Bet"}, {"home": "Belgium", "away": "Iran", "date": "2026-06-21", "outcome": "Away Win", "model_p": 34.1, "edge": 21.8, "best_odds": 9.0, "best_book": "Unibet (NL)"}, {"home": "DR Congo", "away": "Uzbekistan", "date": "2026-06-27", "outcome": "Away Win", "model_p": 49.1, "edge": 20.9, "best_odds": 3.6, "best_book": "Coolbet"}, {"home": "Morocco", "away": "Haiti", "date": "2026-06-24", "outcome": "Draw", "model_p": 32.7, "edge": 18.7, "best_odds": 7.6, "best_book": "Betfair"}, {"home": "France", "away": "Iraq", "date": "2026-06-22", "outcome": "Draw", "model_p": 26.7, "edge": 18.3, "best_odds": 13.5, "best_book": "1xBet"}, {"home": "Portugal", "away": "Uzbekistan", "date": "2026-06-23", "outcome": "Away Win", "model_p": 24.6, "edge": 18.2, "best_odds": 19.5, "best_book": "1xBet"}, {"home": "Senegal", "away": "Iraq", "date": "2026-06-26", "outcome": "Draw", "model_p": 35.9, "edge": 18.2, "best_odds": 5.8, "best_book": "Tipico"}, {"home": "Senegal", "away": "Iraq", "date": "2026-06-26", "outcome": "Away Win", "model_p": 26.8, "edge": 17.8, "best_odds": 12.0, "best_book": "Coolbet"}, {"home": "Belgium", "away": "Iran", "date": "2026-06-21", "outcome": "Draw", "model_p": 37.3, "edge": 16.7, "best_odds": 4.9, "best_book": "Unibet (NL)"}, {"home": "Portugal", "away": "Uzbekistan", "date": "2026-06-23", "outcome": "Draw", "model_p": 30.4, "edge": 16.4, "best_odds": 7.6, "best_book": "Unibet (FR)"}, {"home": "Norway", "away": "France", "date": "2026-06-26", "outcome": "Away Win", "model_p": 68.7, "edge": 16.2, "best_odds": 1.85, "best_book": "BetOnline"}, {"home": "Turkey", "away": "United States", "date": "2026-06-26", "outcome": "Draw", "model_p": 39.9, "edge": 15.8, "best_odds": 4.3, "best_book": "Winamax (DE)"}];
 
-function renderEdges() {
-  const sec = document.getElementById('edges-section');
-  if (!VALUE_BETS || VALUE_BETS.length === 0) { sec.style.display = 'none'; return; }
+function todayISO() {
+  return new Date().toISOString().slice(0, 10);
+}
 
-  const rows = VALUE_BETS.map((e, i) => {
+function edgeRows(list, startIdx) {
+  return list.map((e, i) => {
     const cls = e.outcome === 'Draw'     ? 'obadge-dr'
               : e.outcome === 'Home Win' ? 'obadge-hw' : 'obadge-aw';
     const edgeColor = e.edge >= 20 ? '#16a34a' : e.edge >= 10 ? '#2563eb' : '#555';
@@ -196,7 +202,7 @@ function renderEdges() {
       ? `${e.best_odds} <span class="e-book">@ ${e.best_book}</span>`
       : '—';
     return `<tr>
-      <td class="e-rank">${i + 1}</td>
+      <td class="e-rank">${startIdx + i + 1}</td>
       <td class="e-match">${e.home}<span class="e-vs">vs</span>${e.away}</td>
       <td><span class="obadge ${cls}">${e.outcome}</span></td>
       <td class="e-wesay">${weSay}</td>
@@ -204,22 +210,50 @@ function renderEdges() {
       <td class="e-odds">${oddsStr}</td>
     </tr>`;
   }).join('');
+}
 
-  sec.innerHTML = `
-    <div class="edges-header">
-      <span>🔥</span>
-      <span class="edges-title">Best Value Edges</span>
-      <span class="edges-sub">${VALUE_BETS.length} bets vs market</span>
-    </div>
+function edgeTable(list, startIdx) {
+  if (!list.length) return '';
+  return `
     <div class="edges-scroll">
       <table class="edges-table">
         <thead>
           <tr><th>#</th><th>Match</th><th>Bet</th><th>We Say</th><th>Edge</th><th>Odds</th></tr>
         </thead>
-        <tbody>${rows}</tbody>
+        <tbody>${edgeRows(list, startIdx)}</tbody>
       </table>
-    </div>
-    <div class="edges-footer">Model probability vs consensus bookmaker line · bet responsibly</div>`;
+    </div>`;
+}
+
+function renderEdges() {
+  const sec = document.getElementById('edges-section');
+  if (!VALUE_BETS || VALUE_BETS.length === 0) { sec.style.display = 'none'; return; }
+
+  const today    = todayISO();
+  const todayBets    = VALUE_BETS.filter(e => e.date === today);
+  const upcomingBets = VALUE_BETS.filter(e => e.date !== today);
+
+  let inner = `
+    <div class="edges-header">
+      <span>🔥</span>
+      <span class="edges-title">Best Value Edges</span>
+      <span class="edges-sub">${VALUE_BETS.length} bets vs market</span>
+    </div>`;
+
+  if (todayBets.length) {
+    inner += `
+    <div class="edges-section-label">Today's Best Edges</div>
+    ${edgeTable(todayBets, 0)}`;
+  }
+
+  if (upcomingBets.length) {
+    inner += `
+    <div class="edges-section-label" style="margin-top:${todayBets.length ? '20px' : '0'}">Upcoming Edges</div>
+    ${edgeTable(upcomingBets, todayBets.length)}`;
+  }
+
+  inner += `<div class="edges-footer">Model probability vs consensus bookmaker line · bet responsibly</div>`;
+  sec.innerHTML = inner;
 }
 
 function fmtDate(iso) {
