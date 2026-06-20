@@ -90,31 +90,41 @@ def build_data():
 
 
 def load_edges(top_n=15):
-    """Read value_bets.json and return a flat list sorted by edge, skipping placeholder odds."""
+    """Read value_bets.json. Always includes ALL of today's edges; caps upcoming at top_n."""
     path = os.path.join(BASE_DIR, "value_bets.json")
     if not os.path.exists(path):
         return []
     with open(path) as f:
         data = json.load(f)
-    flat = []
+
+    today_str = date.today().isoformat()
+    today_flat    = []
+    upcoming_flat = []
+
     for r in data.get("results", []):
-        # Extract date from ISO commence string e.g. "2026-06-20T17:00:00Z"
-        commence = r.get("commence", "")
+        commence   = r.get("commence", "")
         match_date = commence[:10] if commence else ""
         for e in r.get("edges", []):
-            if e["best_odds"] and e["best_odds"] < 100:   # drop suspended/placeholder lines
-                flat.append({
-                    "home":      r["home"],
-                    "away":      r["away"],
-                    "date":      match_date,
-                    "outcome":   e["outcome"],
-                    "model_p":   e["model_p"],
-                    "edge":      e["edge"],
-                    "best_odds": e["best_odds"],
-                    "best_book": e["best_book"] or "",
-                })
-    flat.sort(key=lambda x: -x["edge"])
-    return flat[:top_n]
+            if not e["best_odds"] or e["best_odds"] >= 100:
+                continue   # drop suspended/placeholder lines
+            entry = {
+                "home":      r["home"],
+                "away":      r["away"],
+                "date":      match_date,
+                "outcome":   e["outcome"],
+                "model_p":   e["model_p"],
+                "edge":      e["edge"],
+                "best_odds": e["best_odds"],
+                "best_book": e["best_book"] or "",
+            }
+            if match_date == today_str:
+                today_flat.append(entry)
+            else:
+                upcoming_flat.append(entry)
+
+    today_flat.sort(key=lambda x: -x["edge"])
+    upcoming_flat.sort(key=lambda x: -x["edge"])
+    return today_flat + upcoming_flat[:top_n]
 
 
 HTML_TEMPLATE = """\
