@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2026 World Cup Predictions</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0a0f1e;
+      color: #e2e8f0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── Layout ── */
+    .container { max-width: 1080px; margin: 0 auto; padding: 40px 20px 80px; }
+
+    /* ── Header ── */
+    .site-header { text-align: center; margin-bottom: 48px; }
+    .site-header h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #f8fafc 0%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .site-header .sub {
+      margin-top: 8px; color: #64748b; font-size: 0.9rem;
+    }
+    .updated-badge {
+      display: inline-block; margin-top: 14px;
+      background: #1e293b; border: 1px solid #334155;
+      border-radius: 99px; padding: 4px 14px;
+      font-size: 0.78rem; color: #94a3b8;
+    }
+
+    /* ── Date section ── */
+    .date-section { margin-bottom: 36px; }
+    .date-label {
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: #475569;
+      border-bottom: 1px solid #1e293b;
+      padding-bottom: 8px; margin-bottom: 16px;
+    }
+    .date-label .today-tag {
+      background: #1d4ed8; color: #bfdbfe;
+      border-radius: 4px; padding: 2px 7px;
+      font-size: 0.7rem; margin-left: 8px; vertical-align: middle;
+    }
+
+    /* ── Match grid ── */
+    .match-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 14px;
+    }
+
+    /* ── Match card ── */
+    .card {
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 16px;
+      padding: 20px 20px 16px;
+      transition: border-color 0.15s, transform 0.15s;
+    }
+    .card:hover {
+      border-color: #334155;
+      transform: translateY(-2px);
+    }
+
+    .teams {
+      display: flex; align-items: center; justify-content: center;
+      gap: 10px; margin-bottom: 4px; flex-wrap: wrap;
+    }
+    .team-name {
+      font-weight: 700; font-size: 0.95rem; white-space: nowrap;
+    }
+    .flag { font-size: 1.2rem; }
+    .vs {
+      background: #1f2937; color: #6b7280;
+      border-radius: 6px; padding: 2px 8px;
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 1px;
+    }
+
+    .card-meta {
+      text-align: center; font-size: 0.75rem; color: #4b5563;
+      margin-bottom: 16px;
+    }
+    .neutral-dot {
+      display: inline-block; width: 5px; height: 5px;
+      background: #4b5563; border-radius: 50;
+      vertical-align: middle; margin: 0 5px;
+    }
+
+    /* ── Probability bars ── */
+    .bars { display: flex; flex-direction: column; gap: 8px; }
+    .bar-row { }
+    .bar-meta {
+      display: flex; justify-content: space-between;
+      font-size: 0.8rem; margin-bottom: 4px;
+    }
+    .bar-meta .outcome { color: #9ca3af; }
+    .bar-meta .pct { font-weight: 700; }
+    .bar-meta.best .outcome { color: #e2e8f0; font-weight: 600; }
+    .track {
+      background: #1f2937; border-radius: 99px; height: 8px; overflow: hidden;
+    }
+    .fill {
+      height: 8px; border-radius: 99px;
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .fill-hw { background: linear-gradient(90deg, #16a34a, #22c55e); }
+    .fill-dr { background: linear-gradient(90deg, #d97706, #f59e0b); }
+    .fill-aw { background: linear-gradient(90deg, #dc2626, #ef4444); }
+
+    /* ── H2H pill ── */
+    .h2h-row {
+      margin-top: 14px; padding-top: 12px;
+      border-top: 1px solid #1f2937;
+      display: flex; align-items: center; justify-content: center;
+      gap: 6px; flex-wrap: wrap;
+    }
+    .h2h-label { font-size: 0.7rem; color: #4b5563; font-weight: 600; letter-spacing: 0.5px; }
+    .h2h-pill {
+      font-size: 0.72rem; border-radius: 99px; padding: 2px 9px; font-weight: 600;
+    }
+    .h2h-hw { background: #14532d; color: #86efac; }
+    .h2h-dr { background: #451a03; color: #fcd34d; }
+    .h2h-aw { background: #450a0a; color: #fca5a5; }
+    .h2h-none { font-size: 0.72rem; color: #4b5563; font-style: italic; }
+
+    /* ── ELO row ── */
+    .elo-row {
+      margin-top: 8px;
+      text-align: center;
+      font-size: 0.72rem; color: #374151;
+    }
+
+    /* ── Footer ── */
+    footer {
+      margin-top: 60px; text-align: center;
+      font-size: 0.8rem; color: #334155;
+      border-top: 1px solid #1e293b; padding-top: 24px;
+    }
+    footer a { color: #475569; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <header class="site-header">
+    <h1>⚽ 2026 FIFA World Cup Predictions</h1>
+    <p class="sub">XGBoost · trained on 12,426 competitive international matches · 59.6% test accuracy</p>
+    <span class="updated-badge">Updated June 20, 2026 at 02:54 PM</span>
+  </header>
+
+  <main id="app"></main>
+
+  <footer>
+    Model: XGBoost w/ rolling ELO, form, H2H &amp; goal differential features ·
+    <a href="https://www.kaggle.com/datasets/martj42/international-football-results-from-1872-to-2017">Data source</a>
+  </footer>
+
+</div>
+<script>
+const MATCHES = [{"date": "2026-06-20", "home": "Germany", "away": "Ivory Coast", "home_flag": "🇩🇪", "away_flag": "🇨🇮", "neutral": true, "home_win": 56.2, "draw": 25.3, "away_win": 18.5, "home_elo": 1851, "away_elo": 1733, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-20", "home": "Ecuador", "away": "Curaçao", "home_flag": "🇪🇨", "away_flag": "🇨🇼", "neutral": true, "home_win": 65.2, "draw": 22.6, "away_win": 12.2, "home_elo": 1751, "away_elo": 1504, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-20", "home": "Netherlands", "away": "Sweden", "home_flag": "🇳🇱", "away_flag": "🇸🇪", "neutral": true, "home_win": 48.8, "draw": 31.3, "away_win": 19.8, "home_elo": 1835, "away_elo": 1690, "h2h_hw": 25, "h2h_dr": 75, "h2h_aw": 0, "h2h_n": 4}, {"date": "2026-06-20", "home": "Tunisia", "away": "Japan", "home_flag": "🇹🇳", "away_flag": "🇯🇵", "neutral": true, "home_win": 7.8, "draw": 24.9, "away_win": 67.3, "home_elo": 1644, "away_elo": 1817, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 100, "h2h_n": 1}, {"date": "2026-06-21", "home": "Belgium", "away": "Iran", "home_flag": "🇧🇪", "away_flag": "🇮🇷", "neutral": true, "home_win": 28.6, "draw": 37.3, "away_win": 34.1, "home_elo": 1807, "away_elo": 1778, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-21", "home": "New Zealand", "away": "Egypt", "home_flag": "🇳🇿", "away_flag": "🇪🇬", "neutral": true, "home_win": 26.8, "draw": 28.1, "away_win": 45.1, "home_elo": 1618, "away_elo": 1714, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-21", "home": "Spain", "away": "Saudi Arabia", "home_flag": "🇪🇸", "away_flag": "🇸🇦", "neutral": true, "home_win": 59.3, "draw": 31.7, "away_win": 9.0, "home_elo": 1920, "away_elo": 1647, "h2h_hw": 100, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 1}, {"date": "2026-06-21", "home": "Uruguay", "away": "Cape Verde", "home_flag": "🇺🇾", "away_flag": "🇨🇻", "neutral": true, "home_win": 52.5, "draw": 27.2, "away_win": 20.3, "home_elo": 1780, "away_elo": 1594, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-22", "home": "Jordan", "away": "Algeria", "home_flag": "🇯🇴", "away_flag": "🇩🇿", "neutral": true, "home_win": 16.8, "draw": 29.4, "away_win": 53.8, "home_elo": 1621, "away_elo": 1726, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-22", "home": "Argentina", "away": "Austria", "home_flag": "🇦🇷", "away_flag": "🇦🇹", "neutral": true, "home_win": 50.7, "draw": 23.9, "away_win": 25.5, "home_elo": 1957, "away_elo": 1711, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-22", "home": "France", "away": "Iraq", "home_flag": "🇫🇷", "away_flag": "🇮🇶", "neutral": true, "home_win": 55.7, "draw": 26.7, "away_win": 17.6, "home_elo": 1914, "away_elo": 1657, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-22", "home": "Norway", "away": "Senegal", "home_flag": "🇳🇴", "away_flag": "🇸🇳", "neutral": true, "home_win": 30.9, "draw": 30.6, "away_win": 38.6, "home_elo": 1716, "away_elo": 1756, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-23", "home": "Portugal", "away": "Uzbekistan", "home_flag": "🇵🇹", "away_flag": "🇺🇿", "neutral": true, "home_win": 45.0, "draw": 30.4, "away_win": 24.6, "home_elo": 1826, "away_elo": 1690, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-23", "home": "Colombia", "away": "DR Congo", "home_flag": "🇨🇴", "away_flag": "🇨🇩", "neutral": true, "home_win": 55.4, "draw": 26.1, "away_win": 18.5, "home_elo": 1833, "away_elo": 1638, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-23", "home": "England", "away": "Ghana", "home_flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "away_flag": "🇬🇭", "neutral": true, "home_win": 66.4, "draw": 20.5, "away_win": 13.1, "home_elo": 1884, "away_elo": 1615, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-23", "home": "Panama", "away": "Croatia", "home_flag": "🇵🇦", "away_flag": "🇭🇷", "neutral": true, "home_win": 12.6, "draw": 35.9, "away_win": 51.5, "home_elo": 1652, "away_elo": 1792, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-24", "home": "Morocco", "away": "Haiti", "home_flag": "🇲🇦", "away_flag": "🇭🇹", "neutral": true, "home_win": 54.6, "draw": 32.7, "away_win": 12.7, "home_elo": 1818, "away_elo": 1557, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-24", "home": "Scotland", "away": "Brazil", "home_flag": "🏴󠁧󠁢󠁳󠁣󠁴󠁿", "away_flag": "🇧🇷", "neutral": true, "home_win": 8.6, "draw": 22.7, "away_win": 68.7, "home_elo": 1666, "away_elo": 1863, "h2h_hw": 0, "h2h_dr": 25, "h2h_aw": 75, "h2h_n": 4}, {"date": "2026-06-24", "home": "Bosnia and Herzegovina", "away": "Qatar", "home_flag": "🇧🇦", "away_flag": "🇶🇦", "neutral": true, "home_win": 23.1, "draw": 34.0, "away_win": 42.9, "home_elo": 1592, "away_elo": 1617, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-24", "home": "South Africa", "away": "South Korea", "home_flag": "🇿🇦", "away_flag": "🇰🇷", "neutral": true, "home_win": 11.0, "draw": 33.6, "away_win": 55.5, "home_elo": 1616, "away_elo": 1767, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-24", "home": "Mexico", "away": "Czech Republic", "home_flag": "🇲🇽", "away_flag": "🇨🇿", "neutral": false, "home_win": 56.5, "draw": 26.6, "away_win": 16.8, "home_elo": 1798, "away_elo": 1656, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-24", "home": "Canada", "away": "Switzerland", "home_flag": "🇨🇦", "away_flag": "🇨🇭", "neutral": false, "home_win": 20.0, "draw": 38.6, "away_win": 41.4, "home_elo": 1705, "away_elo": 1770, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-25", "home": "Tunisia", "away": "Netherlands", "home_flag": "🇹🇳", "away_flag": "🇳🇱", "neutral": true, "home_win": 5.5, "draw": 16.0, "away_win": 78.5, "home_elo": 1644, "away_elo": 1835, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-25", "home": "United States", "away": "Turkey", "home_flag": "🇺🇸", "away_flag": "🇹🇷", "neutral": false, "home_win": 34.9, "draw": 43.0, "away_win": 22.1, "home_elo": 1748, "away_elo": 1721, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 100, "h2h_n": 1}, {"date": "2026-06-25", "home": "Paraguay", "away": "Australia", "home_flag": "🇵🇾", "away_flag": "🇦🇺", "neutral": true, "home_win": 12.6, "draw": 34.7, "away_win": 52.7, "home_elo": 1673, "away_elo": 1767, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-25", "home": "Curaçao", "away": "Ivory Coast", "home_flag": "🇨🇼", "away_flag": "🇨🇮", "neutral": true, "home_win": 7.5, "draw": 19.3, "away_win": 73.2, "home_elo": 1504, "away_elo": 1733, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-25", "home": "Ecuador", "away": "Germany", "home_flag": "🇪🇨", "away_flag": "🇩🇪", "neutral": true, "home_win": 13.0, "draw": 18.6, "away_win": 68.5, "home_elo": 1751, "away_elo": 1851, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 100, "h2h_n": 1}, {"date": "2026-06-25", "home": "Japan", "away": "Sweden", "home_flag": "🇯🇵", "away_flag": "🇸🇪", "neutral": true, "home_win": 42.0, "draw": 34.5, "away_win": 23.4, "home_elo": 1817, "away_elo": 1690, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-26", "home": "Senegal", "away": "Iraq", "home_flag": "🇸🇳", "away_flag": "🇮🇶", "neutral": true, "home_win": 37.2, "draw": 35.9, "away_win": 26.8, "home_elo": 1756, "away_elo": 1657, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-26", "home": "Norway", "away": "France", "home_flag": "🇳🇴", "away_flag": "🇫🇷", "neutral": true, "home_win": 11.2, "draw": 20.1, "away_win": 68.7, "home_elo": 1716, "away_elo": 1914, "h2h_hw": 17, "h2h_dr": 17, "h2h_aw": 67, "h2h_n": 6}, {"date": "2026-06-26", "home": "Uruguay", "away": "Spain", "home_flag": "🇺🇾", "away_flag": "🇪🇸", "neutral": true, "home_win": 12.3, "draw": 23.0, "away_win": 64.7, "home_elo": 1780, "away_elo": 1920, "h2h_hw": 0, "h2h_dr": 67, "h2h_aw": 33, "h2h_n": 3}, {"date": "2026-06-26", "home": "New Zealand", "away": "Belgium", "home_flag": "🇳🇿", "away_flag": "🇧🇪", "neutral": true, "home_win": 12.5, "draw": 30.6, "away_win": 56.8, "home_elo": 1618, "away_elo": 1807, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-26", "home": "Egypt", "away": "Iran", "home_flag": "🇪🇬", "away_flag": "🇮🇷", "neutral": true, "home_win": 16.4, "draw": 36.1, "away_win": 47.5, "home_elo": 1714, "away_elo": 1778, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-26", "home": "Cape Verde", "away": "Saudi Arabia", "home_flag": "🇨🇻", "away_flag": "🇸🇦", "neutral": true, "home_win": 23.5, "draw": 33.0, "away_win": 43.5, "home_elo": 1594, "away_elo": 1647, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-27", "home": "DR Congo", "away": "Uzbekistan", "home_flag": "🇨🇩", "away_flag": "🇺🇿", "neutral": true, "home_win": 18.3, "draw": 32.6, "away_win": 49.1, "home_elo": 1638, "away_elo": 1690, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-27", "home": "Colombia", "away": "Portugal", "home_flag": "🇨🇴", "away_flag": "🇵🇹", "neutral": true, "home_win": 25.4, "draw": 31.1, "away_win": 43.5, "home_elo": 1833, "away_elo": 1826, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-27", "home": "Panama", "away": "England", "home_flag": "🇵🇦", "away_flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "neutral": true, "home_win": 6.0, "draw": 14.9, "away_win": 79.1, "home_elo": 1652, "away_elo": 1884, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 100, "h2h_n": 1}, {"date": "2026-06-27", "home": "Algeria", "away": "Austria", "home_flag": "🇩🇿", "away_flag": "🇦🇹", "neutral": true, "home_win": 23.0, "draw": 34.8, "away_win": 42.2, "home_elo": 1726, "away_elo": 1711, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 100, "h2h_n": 1}, {"date": "2026-06-27", "home": "Jordan", "away": "Argentina", "home_flag": "🇯🇴", "away_flag": "🇦🇷", "neutral": true, "home_win": 4.0, "draw": 14.1, "away_win": 81.9, "home_elo": 1621, "away_elo": 1957, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}, {"date": "2026-06-27", "home": "Croatia", "away": "Ghana", "home_flag": "🇭🇷", "away_flag": "🇬🇭", "neutral": true, "home_win": 51.7, "draw": 27.4, "away_win": 20.9, "home_elo": 1792, "away_elo": 1615, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0}];
+
+function fmtDate(iso) {
+  const d = new Date(iso + 'T12:00:00');
+  return d.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
+}
+
+function isToday(iso) {
+  return iso === new Date().toISOString().slice(0, 10);
+}
+
+function barRow(label, pct, fillClass, isBest) {
+  return `
+    <div class="bar-row">
+      <div class="bar-meta${isBest ? ' best' : ''}">
+        <span class="outcome">${label}</span>
+        <span class="pct" style="color:${isBest ? '#e2e8f0' : '#6b7280'}">${pct.toFixed(1)}%</span>
+      </div>
+      <div class="track">
+        <div class="fill ${fillClass}" style="width:${pct}%"></div>
+      </div>
+    </div>`;
+}
+
+function h2hSection(m) {
+  if (m.h2h_n === 0) {
+    return `<div class="h2h-row"><span class="h2h-none">No prior H2H in competitive play</span></div>`;
+  }
+  return `
+    <div class="h2h-row">
+      <span class="h2h-label">H2H (${m.h2h_n} games)</span>
+      <span class="h2h-pill h2h-hw">${m.home} ${m.h2h_hw}%</span>
+      <span class="h2h-pill h2h-dr">Draw ${m.h2h_dr}%</span>
+      <span class="h2h-pill h2h-aw">${m.away} ${m.h2h_aw}%</span>
+    </div>`;
+}
+
+function card(m) {
+  const best = m.home_win >= m.draw && m.home_win >= m.away_win ? 'hw'
+             : m.away_win >= m.draw ? 'aw' : 'dr';
+  const venue = m.neutral ? 'Neutral venue' : `${m.home} home advantage`;
+
+  return `
+    <div class="card">
+      <div class="teams">
+        <span class="flag">${m.home_flag}</span>
+        <span class="team-name">${m.home}</span>
+        <span class="vs">VS</span>
+        <span class="team-name">${m.away}</span>
+        <span class="flag">${m.away_flag}</span>
+      </div>
+      <div class="card-meta">${venue}</div>
+      <div class="bars">
+        ${barRow(m.home + ' Win', m.home_win, 'fill-hw', best === 'hw')}
+        ${barRow('Draw',          m.draw,     'fill-dr', best === 'dr')}
+        ${barRow(m.away + ' Win', m.away_win, 'fill-aw', best === 'aw')}
+      </div>
+      ${h2hSection(m)}
+      <div class="elo-row">ELO · ${m.home} ${m.home_elo} · ${m.away} ${m.away_elo}</div>
+    </div>`;
+}
+
+function render() {
+  const byDate = {};
+  MATCHES.forEach(m => {
+    if (!byDate[m.date]) byDate[m.date] = [];
+    byDate[m.date].push(m);
+  });
+
+  const app = document.getElementById('app');
+  Object.keys(byDate).sort().forEach(dateStr => {
+    const today = isToday(dateStr);
+    const label = fmtDate(dateStr);
+    const todayTag = today ? '<span class="today-tag">TODAY</span>' : '';
+
+    const cards = byDate[dateStr].map(card).join('');
+    app.innerHTML += `
+      <section class="date-section">
+        <div class="date-label">${label}${todayTag}</div>
+        <div class="match-grid">${cards}</div>
+      </section>`;
+  });
+}
+
+render();
+</script>
+</body>
+</html>
