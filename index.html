@@ -18,6 +18,43 @@
 
     .container { max-width: 1100px; margin: 0 auto; padding: 0 20px 80px; }
 
+    /* ── Ticker ── */
+    .ticker-bar {
+      background: #0d0d0d;
+      overflow: hidden;
+      padding: 10px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid #1e1e1e;
+    }
+    .ticker-track {
+      display: inline-flex;
+      white-space: nowrap;
+      animation: tickerScroll 50s linear infinite;
+    }
+    .ticker-bar:hover .ticker-track { animation-play-state: paused; }
+    @keyframes tickerScroll {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-33.333%); }
+    }
+    .ticker-item {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 0 30px; font-size: 0.78rem; color: #888;
+      border-right: 1px solid #222;
+    }
+    .ticker-team  { color: #e5e5e5; font-weight: 600; }
+    .ticker-fav {
+      background: #16a34a; color: #fff;
+      border-radius: 4px; padding: 1px 5px;
+      font-size: 0.58rem; font-weight: 700; letter-spacing: 0.5px;
+      text-transform: uppercase; margin-left: 4px; vertical-align: middle;
+    }
+    .ticker-sep   { color: #444; font-size: 0.68rem; margin: 0 4px; }
+    .ticker-venue { color: #444; font-size: 0.7rem; margin-left: 8px; }
+    .ticker-flag  { font-size: 1rem; line-height: 1; }
+    .ticker-dot   { color: #333; margin: 0 8px; }
+
     /* ── Hero header ── */
     .site-hero {
       padding: 72px 0 52px;
@@ -267,12 +304,13 @@
   </style>
 </head>
 <body>
+<div id="ticker"></div>
 <div class="container">
 
   <header class="site-hero">
     <div class="hero-eyebrow">FIFA World Cup 2026</div>
     <h1 class="hero-title">Match<br>Picks</h1>
-    <p class="hero-sub">AI predictions for every game · updated daily · last refreshed June 20, 2026 at 03:58 PM</p>
+    <p class="hero-sub">AI predictions for every game · updated daily · last refreshed June 20, 2026 at 04:03 PM</p>
     <div class="hero-stats">
       <div class="hero-stat">
         <span class="stat-val">59.6%</span>
@@ -460,6 +498,33 @@ function render() {
   });
 }
 
+function renderTicker() {
+  const today      = todayISO();
+  const todayGames = MATCHES.filter(m => m.date === today);
+  const wrap       = document.getElementById('ticker');
+  if (!todayGames.length || !wrap) return;
+
+  function tickerItem(m) {
+    const maxP   = Math.max(m.home_win, m.away_win, m.draw);
+    const homeF  = m.home_win === maxP && m.home_win > m.draw;
+    const awayF  = m.away_win === maxP && m.away_win > m.draw;
+    const venue  = m.neutral ? 'Neutral' : m.home + ' home';
+    return '<span class="ticker-item">'
+      + '<span class="ticker-flag">' + m.home_flag + '</span>'
+      + '<span class="ticker-team">' + m.home + (homeF ? ' <span class="ticker-fav">FAV</span>' : '') + '</span>'
+      + '<span class="ticker-sep">vs</span>'
+      + '<span class="ticker-flag">' + m.away_flag + '</span>'
+      + '<span class="ticker-team">' + m.away + (awayF ? ' <span class="ticker-fav">FAV</span>' : '') + '</span>'
+      + '<span class="ticker-venue">· ' + venue + '</span>'
+      + '</span>';
+  }
+
+  const items = todayGames.map(tickerItem).join('');
+  // Triple the items so -33.333% translateX loops seamlessly at any window width
+  wrap.innerHTML = '<div class="ticker-bar"><div class="ticker-track">' + items + items + items + '</div></div>';
+}
+
+renderTicker();
 renderEdges();
 render();
 
