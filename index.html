@@ -194,6 +194,27 @@
     /* ── ELO ── */
     .elo-row { margin-top: 7px; text-align: center; font-size: 0.68rem; color: #ccc; }
 
+    /* ── Monospace numbers ── */
+    .mono { font-family: "Courier New", Courier, monospace; }
+
+    /* ── Model disclosure ── */
+    .model-disclosure {
+      background: #fff; border: 1px solid #e5e5e5; border-radius: 12px;
+      padding: 18px 22px; margin-bottom: 32px;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px 24px;
+    }
+    .disclosure-row {
+      display: flex; flex-direction: column; gap: 2px;
+    }
+    .disclosure-label {
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: #bbb;
+    }
+    .disclosure-val {
+      font-size: 0.88rem; color: #111; font-weight: 600;
+    }
+    .disclosure-val .mono { font-size: 1rem; font-weight: 700; }
+
     /* ── Footer ── */
     footer {
       margin-top: 60px; text-align: center; font-size: 0.75rem; color: #bbb;
@@ -210,6 +231,33 @@
     <p class="sub">XGBoost · 12,426 competitive matches · 59.6% test accuracy</p>
     <span class="updated-badge">Updated June 20, 2026 at 03:52 PM</span>
   </header>
+
+  <div class="model-disclosure">
+    <div class="disclosure-row">
+      <span class="disclosure-label">Match Outcome (W/D/L)</span>
+      <span class="disclosure-val">XGBoost · <span class="mono">59.6%</span> accuracy</span>
+    </div>
+    <div class="disclosure-row">
+      <span class="disclosure-label">Over / Under 2.5 Goals</span>
+      <span class="disclosure-val">XGBoost · <span class="mono">59.1%</span> accuracy</span>
+    </div>
+    <div class="disclosure-row">
+      <span class="disclosure-label">Both Teams to Score</span>
+      <span class="disclosure-val">XGBoost · <span class="mono">54.4%</span> accuracy</span>
+    </div>
+    <div class="disclosure-row">
+      <span class="disclosure-label">Training Data</span>
+      <span class="disclosure-val"><span class="mono">12,426</span> competitive matches</span>
+    </div>
+    <div class="disclosure-row">
+      <span class="disclosure-label">Test Period</span>
+      <span class="disclosure-val">2018 – present</span>
+    </div>
+    <div class="disclosure-row">
+      <span class="disclosure-label">Edges vs Market</span>
+      <span class="disclosure-val">Vig-free consensus line</span>
+    </div>
+  </div>
 
   <section class="bets-section" id="edges-section"></section>
 
@@ -254,8 +302,8 @@ function betStatement(e) {
   const odds = e.dk_odds || e.best_odds;
   const book = e.dk_odds ? 'DraftKings' : e.best_book;
   const am   = odds ? toAmerican(odds) : null;
-  const oddsStr = am ? ` (${book} <strong>${am}</strong>)` : '';
-  return `Our model gives ${outcomePhrase(e)} a <strong>${e.model_p}%</strong> chance. The market prices it at <strong>${e.market_p}%</strong>${oddsStr} — a <strong>+${e.edge}%</strong> edge.`;
+  const oddsStr = am ? ` (${book} <strong class="mono">${am}</strong>)` : '';
+  return `Our model gives ${outcomePhrase(e)} a <strong class="mono">${e.model_p}%</strong> chance. The market prices it at <strong class="mono">${e.market_p}%</strong>${oddsStr} — a <strong class="mono">+${e.edge}%</strong> edge.`;
 }
 
 function betChip(e) {
@@ -269,8 +317,8 @@ function betChip(e) {
       </div>
       <div class="chip-statement">${betStatement(e)}</div>
       <div class="chip-bottom">
-        <span class="chip-edge">+${e.edge}% · ${edgeLbl}</span>
-        ${(e.dk_odds || e.best_odds) ? `<span class="chip-dk"><span class="dk-label">${e.dk_odds ? 'DraftKings' : e.best_book}</span>${toAmerican(e.dk_odds || e.best_odds)}</span>` : ''}
+        <span class="chip-edge"><span class="mono">+${e.edge}%</span> · ${edgeLbl}</span>
+        ${(e.dk_odds || e.best_odds) ? `<span class="chip-dk"><span class="dk-label">${e.dk_odds ? 'DraftKings' : e.best_book}</span><span class="mono">${toAmerican(e.dk_odds || e.best_odds)}</span></span>` : ''}
       </div>
     </div>`;
 }
@@ -309,7 +357,7 @@ function barRow(label, pct, fillClass, isBest) {
     <div class="bar-row">
       <div class="bar-meta${isBest ? ' best' : ''}">
         <span class="outcome">${label}</span>
-        <span class="pct">${pct.toFixed(1)}%</span>
+        <span class="pct mono">${pct.toFixed(1)}%</span>
       </div>
       <div class="track"><div class="fill ${fillClass}" style="width:${pct}%"></div></div>
     </div>`;
@@ -320,8 +368,8 @@ function goalsSection(m) {
   const bttsCls  = m.btts_yes >= 55 ? 'highlight'    : m.btts_yes <= 35 ? 'highlight-red' : '';
   return `
     <div class="goals-row">
-      <span class="goals-pill ${overCls}"><span class="g-label">O/U 2.5</span>Over ${m.over25}% · Under ${m.under25}%</span>
-      <span class="goals-pill ${bttsCls}"><span class="g-label">BTTS</span>Yes ${m.btts_yes}% · No ${m.btts_no}%</span>
+      <span class="goals-pill ${overCls}"><span class="g-label">O/U 2.5</span>Over <span class="mono">${m.over25}%</span> · Under <span class="mono">${m.under25}%</span></span>
+      <span class="goals-pill ${bttsCls}"><span class="g-label">BTTS</span>Yes <span class="mono">${m.btts_yes}%</span> · No <span class="mono">${m.btts_no}%</span></span>
     </div>`;
 }
 
@@ -358,7 +406,7 @@ function card(m) {
       </div>
       ${goalsSection(m)}
       ${h2hSection(m)}
-      <div class="elo-row">ELO · ${m.home} ${m.home_elo} · ${m.away} ${m.away_elo}</div>
+      <div class="elo-row">ELO · ${m.home} <span class="mono">${m.home_elo}</span> · ${m.away} <span class="mono">${m.away_elo}</span></div>
     </div>`;
 }
 
