@@ -278,15 +278,23 @@ def analyse(event: dict, arts: dict, min_edge: float):
         if edge >= min_edge:
             price, book = best_mapped.get(outcome, (None, None))
             dk_price    = dk_mapped.get(outcome)
+            _ev    = round((price - 1) * model_p - (1 - model_p), 3) if price else None
+            _kr    = ((price * model_p - 1) / (price - 1)) if price and price > 1 else 0.0
+            _kelly = round(max(_kr, 0) * 100, 1)
             edges.append({
-                "market":   "1x2",
-                "outcome":  outcome,
-                "model_p":  round(model_p * 100, 1),
-                "market_p": round(market_p * 100, 1),
-                "edge":     round(edge * 100, 1),
-                "best_odds": round(price, 2) if price else None,
-                "best_book": book,
-                "dk_odds":   round(dk_price, 2) if dk_price else None,
+                "market":     "1x2",
+                "outcome":    outcome,
+                "model_p":    round(model_p * 100, 1),
+                "market_p":   round(market_p * 100, 1),
+                "edge":       round(edge * 100, 1),
+                "best_odds":  round(price, 2) if price else None,
+                "best_book":  book,
+                "dk_odds":    round(dk_price, 2) if dk_price else None,
+                "ev":         _ev,
+                "kelly":      _kelly,
+                "half_kelly": round(_kelly / 2, 1),
+                "fair_odds":  round(1 / model_p, 2) if model_p > 0 else None,
+                "certainty":  round((model_p - 1/3) * 100, 1),
             })
 
     # ── Totals O/U 2.5 edges ──
@@ -306,15 +314,23 @@ def analyse(event: dict, arts: dict, min_edge: float):
                 if price and price >= 100:
                     continue
                 dk_price = dk_tot.get(api_name)
+                _ev    = round((price - 1) * model_p - (1 - model_p), 3) if price else None
+                _kr    = ((price * model_p - 1) / (price - 1)) if price and price > 1 else 0.0
+                _kelly = round(max(_kr, 0) * 100, 1)
                 edges.append({
-                    "market":   "totals",
-                    "outcome":  our_label,
-                    "model_p":  round(model_p * 100, 1),
-                    "market_p": round(market_p * 100, 1),
-                    "edge":     round(edge * 100, 1),
-                    "best_odds": round(price, 2) if price else None,
-                    "best_book": book,
-                    "dk_odds":   round(dk_price, 2) if dk_price else None,
+                    "market":     "totals",
+                    "outcome":    our_label,
+                    "model_p":    round(model_p * 100, 1),
+                    "market_p":   round(market_p * 100, 1),
+                    "edge":       round(edge * 100, 1),
+                    "best_odds":  round(price, 2) if price else None,
+                    "best_book":  book,
+                    "dk_odds":    round(dk_price, 2) if dk_price else None,
+                    "ev":         _ev,
+                    "kelly":      _kelly,
+                    "half_kelly": round(_kelly / 2, 1),
+                    "fair_odds":  round(1 / model_p, 2) if model_p > 0 else None,
+                    "certainty":  round((model_p - 0.5) * 100, 1),
                 })
 
     edges.sort(key=lambda x: -x["edge"])
