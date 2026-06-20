@@ -338,13 +338,18 @@ HTML_TEMPLATE = """\
     .model-disclosure {
       background: #fff; border: 1px solid #e5e5e5; border-radius: 12px;
       padding: 18px 22px; margin-bottom: 32px;
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px 24px;
+    }
+    .disclosure-intro {
+      font-size: 0.85rem; color: #555; margin-bottom: 14px; line-height: 1.5;
+    }
+    .disclosure-stats {
+      display: flex; gap: 24px; flex-wrap: wrap;
     }
     .disclosure-row {
       display: flex; flex-direction: column; gap: 2px;
     }
     .disclosure-label {
-      font-size: 0.62rem; font-weight: 700; letter-spacing: 1.5px;
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 1px;
       text-transform: uppercase; color: #bbb;
     }
     .disclosure-val {
@@ -365,34 +370,28 @@ HTML_TEMPLATE = """\
 
   <header class="site-header">
     <h1>⚽ 2026 World Cup Predictions</h1>
-    <p class="sub">XGBoost · 12,426 competitive matches · 59.6% test accuracy</p>
-    <span class="updated-badge">Updated __UPDATED__</span>
+    <p class="sub">Predictions for every match · updated daily · last refreshed __UPDATED__</p>
   </header>
 
   <div class="model-disclosure">
-    <div class="disclosure-row">
-      <span class="disclosure-label">Match Outcome (W/D/L)</span>
-      <span class="disclosure-val">XGBoost · <span class="mono">59.6%</span> accuracy</span>
-    </div>
-    <div class="disclosure-row">
-      <span class="disclosure-label">Over / Under 2.5 Goals</span>
-      <span class="disclosure-val">XGBoost · <span class="mono">59.1%</span> accuracy</span>
-    </div>
-    <div class="disclosure-row">
-      <span class="disclosure-label">Both Teams to Score</span>
-      <span class="disclosure-val">XGBoost · <span class="mono">54.4%</span> accuracy</span>
-    </div>
-    <div class="disclosure-row">
-      <span class="disclosure-label">Training Data</span>
-      <span class="disclosure-val"><span class="mono">12,426</span> competitive matches</span>
-    </div>
-    <div class="disclosure-row">
-      <span class="disclosure-label">Test Period</span>
-      <span class="disclosure-val">2018 – present</span>
-    </div>
-    <div class="disclosure-row">
-      <span class="disclosure-label">Edges vs Market</span>
-      <span class="disclosure-val">Vig-free consensus line</span>
+    <p class="disclosure-intro">We trained a prediction model on <strong>12,000+ real international matches</strong> going back decades. It looks at team strength, recent form, head-to-head history, and goals data to call each game. Here's how often it's right:</p>
+    <div class="disclosure-stats">
+      <div class="disclosure-row">
+        <span class="disclosure-label">Who wins / draws / loses</span>
+        <span class="disclosure-val">Right <span class="mono">~6</span> out of <span class="mono">10</span></span>
+      </div>
+      <div class="disclosure-row">
+        <span class="disclosure-label">Over or under 2.5 goals</span>
+        <span class="disclosure-val">Right <span class="mono">~6</span> out of <span class="mono">10</span></span>
+      </div>
+      <div class="disclosure-row">
+        <span class="disclosure-label">Both teams score?</span>
+        <span class="disclosure-val">Right <span class="mono">~5</span> out of <span class="mono">10</span></span>
+      </div>
+      <div class="disclosure-row">
+        <span class="disclosure-label">Tested on</span>
+        <span class="disclosure-val">Games from <span class="mono">2018</span> onward</span>
+      </div>
     </div>
   </div>
 
@@ -401,8 +400,8 @@ HTML_TEMPLATE = """\
   <main id="app"></main>
 
   <footer>
-    XGBoost w/ rolling ELO, form, H2H &amp; goal differential ·
-    <a href="https://www.kaggle.com/datasets/martj42/international-football-results-from-1872-to-2017">Data</a>
+    Predictions based on historical match data, team strength, recent form &amp; head-to-head records ·
+    <a href="https://www.kaggle.com/datasets/martj42/international-football-results-from-1872-to-2017">Data source</a>
   </footer>
 
 </div>
@@ -477,7 +476,7 @@ function renderEdges() {
       <span class="bets-count">${todayBets.length} edge${todayBets.length !== 1 ? 's' : ''} found</span>
     </div>
     ${chipsHtml}
-    <p class="bets-footer">Model probability vs vig-free market consensus · bet responsibly</p>`;
+    <p class="bets-footer">Edges are vs the average bookmaker line with the house cut removed · always bet responsibly</p>`;
 }
 
 function fmtDate(iso) {
@@ -512,10 +511,10 @@ function goalsSection(m) {
 
 function h2hSection(m) {
   if (m.h2h_n === 0)
-    return `<div class="h2h-row"><span class="h2h-none">No prior H2H in competitive play</span></div>`;
+    return `<div class="h2h-row"><span class="h2h-none">No prior matchups on record</span></div>`;
   return `
     <div class="h2h-row">
-      <span class="h2h-label">H2H (${m.h2h_n})</span>
+      <span class="h2h-label">Last ${m.h2h_n} meetings</span>
       <span class="h2h-pill h2h-hw">${m.home} ${m.h2h_hw}%</span>
       <span class="h2h-pill h2h-dr">Draw ${m.h2h_dr}%</span>
       <span class="h2h-pill h2h-aw">${m.away} ${m.h2h_aw}%</span>
@@ -543,7 +542,7 @@ function card(m) {
       </div>
       ${goalsSection(m)}
       ${h2hSection(m)}
-      <div class="elo-row">ELO · ${m.home} <span class="mono">${m.home_elo}</span> · ${m.away} <span class="mono">${m.away_elo}</span></div>
+      <div class="elo-row">Strength rating · ${m.home} <span class="mono">${m.home_elo}</span> · ${m.away} <span class="mono">${m.away_elo}</span></div>
     </div>`;
 }
 
