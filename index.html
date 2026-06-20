@@ -193,6 +193,24 @@
 
     .bets-footer { margin-top: 16px; font-size: 0.67rem; color: #ccc; }
 
+    /* ── Day tabs ── */
+    .day-tabs {
+      display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap;
+    }
+    .day-tab {
+      padding: 7px 18px; border-radius: 99px;
+      font-size: 0.78rem; font-weight: 700;
+      border: 1.5px solid #e5e5e5; background: #fff; color: #888;
+      cursor: pointer; transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .day-tab:hover { border-color: #bbb; color: #444; }
+    .day-tab.active {
+      background: #111; border-color: #111; color: #fff;
+    }
+    .day-panel { display: none; }
+    .day-panel.active { display: block; }
+
     /* ── Date section ── */
     .date-section { margin-bottom: 32px; }
     .date-label {
@@ -319,6 +337,56 @@
     }
     .reveal.visible { opacity: 1; transform: none; }
 
+    /* ── Live accuracy card ── */
+    .acc-card {
+      background: #fff; border: 1px solid #e5e5e5; border-radius: 16px;
+      padding: 26px 28px 22px; margin-bottom: 44px;
+    }
+    .acc-card-header {
+      display: flex; align-items: baseline; gap: 10px; margin-bottom: 22px;
+    }
+    .acc-card-title { font-size: 1.05rem; font-weight: 700; color: #111; }
+    .acc-card-sub   { font-size: 0.78rem; color: #bbb; }
+
+    .acc-stats {
+      display: flex; gap: 0; flex-wrap: wrap;
+      border: 1px solid #f0f0f0; border-radius: 12px; overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .acc-stat {
+      flex: 1; min-width: 120px;
+      padding: 14px 18px;
+      border-right: 1px solid #f0f0f0;
+    }
+    .acc-stat:last-child { border-right: none; }
+    .acc-stat-val {
+      font-size: 1.6rem; font-weight: 800; line-height: 1;
+      font-family: "Courier New", monospace; margin-bottom: 4px;
+    }
+    .acc-stat-val.green { color: #16a34a; }
+    .acc-stat-val.amber { color: #d97706; }
+    .acc-stat-val.red   { color: #dc2626; }
+    .acc-stat-lbl { font-size: 0.68rem; color: #aaa; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.3; }
+
+    .draw-comparison { margin-bottom: 10px; }
+    .draw-row {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
+    }
+    .draw-row-label { font-size: 0.72rem; color: #888; min-width: 170px; }
+    .draw-track {
+      flex: 1; background: #f5f5f5; border-radius: 99px; height: 7px; overflow: hidden;
+    }
+    .draw-fill-hist    { height: 7px; border-radius: 99px; background: #d1d5db; }
+    .draw-fill-current { height: 7px; border-radius: 99px; background: #f59e0b; }
+    .draw-pct { font-size: 0.72rem; font-weight: 700; font-family: "Courier New", monospace; min-width: 36px; text-align: right; }
+    .draw-pct.amber { color: #d97706; }
+
+    .acc-note {
+      font-size: 0.78rem; color: #888; line-height: 1.55;
+      border-top: 1px solid #f0f0f0; padding-top: 14px; margin-top: 4px;
+    }
+    .acc-note strong { color: #555; }
+
     /* ── Footer ── */
     footer {
       margin-top: 60px; text-align: center; font-size: 0.78rem; color: #bbb;
@@ -335,7 +403,7 @@
   <header class="site-hero">
     <div class="hero-eyebrow">FIFA World Cup 2026</div>
     <h1 class="hero-title">Match<br>Picks</h1>
-    <p class="hero-sub">AI predictions for every game · updated daily · last refreshed June 20, 2026 at 04:42 PM</p>
+    <p class="hero-sub">AI predictions for every game · updated daily · last refreshed June 20, 2026 at 04:48 PM</p>
     <div class="hero-stats">
       <div class="hero-stat">
         <span class="stat-val">59.6%</span>
@@ -356,6 +424,7 @@
     </div>
   </header>
 
+  <div id="acc-section"></div>
   <section class="bets-section" id="edges-section"></section>
 
   <main id="app"></main>
@@ -369,6 +438,7 @@
 <script>
 const MATCHES    = [{"date": "2026-06-20", "home": "Germany", "away": "Ivory Coast", "home_flag": "🇩🇪", "away_flag": "🇨🇮", "neutral": true, "home_win": 56.2, "draw": 25.3, "away_win": 18.5, "home_elo": 1851, "away_elo": 1733, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0, "city": "Toronto", "country": "Canada", "kickoff_utc": "2026-06-20T20:00:00Z", "over25": 54.6, "under25": 45.4, "btts_yes": 56.0, "btts_no": 44.0}, {"date": "2026-06-20", "home": "Ecuador", "away": "Curaçao", "home_flag": "🇪🇨", "away_flag": "🇨🇼", "neutral": true, "home_win": 65.2, "draw": 22.6, "away_win": 12.2, "home_elo": 1751, "away_elo": 1504, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0, "city": "Kansas City", "country": "United States", "kickoff_utc": "2026-06-21T00:00:00Z", "over25": 52.2, "under25": 47.8, "btts_yes": 44.9, "btts_no": 55.1}, {"date": "2026-06-20", "home": "Netherlands", "away": "Sweden", "home_flag": "🇳🇱", "away_flag": "🇸🇪", "neutral": true, "home_win": 48.8, "draw": 31.3, "away_win": 19.8, "home_elo": 1835, "away_elo": 1690, "h2h_hw": 25, "h2h_dr": 75, "h2h_aw": 0, "h2h_n": 4, "city": "Houston", "country": "United States", "kickoff_utc": "", "over25": 56.8, "under25": 43.2, "btts_yes": 62.8, "btts_no": 37.2}, {"date": "2026-06-20", "home": "Tunisia", "away": "Japan", "home_flag": "🇹🇳", "away_flag": "🇯🇵", "neutral": true, "home_win": 7.8, "draw": 24.9, "away_win": 67.3, "home_elo": 1644, "away_elo": 1817, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 100, "h2h_n": 1, "city": "Guadalupe", "country": "Mexico", "kickoff_utc": "2026-06-21T04:00:00Z", "over25": 52.7, "under25": 47.3, "btts_yes": 55.7, "btts_no": 44.3}, {"date": "2026-06-21", "home": "Belgium", "away": "Iran", "home_flag": "🇧🇪", "away_flag": "🇮🇷", "neutral": true, "home_win": 28.6, "draw": 37.3, "away_win": 34.1, "home_elo": 1807, "away_elo": 1778, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0, "city": "Inglewood", "country": "United States", "kickoff_utc": "2026-06-21T19:00:00Z", "over25": 43.9, "under25": 56.1, "btts_yes": 60.5, "btts_no": 39.5}, {"date": "2026-06-21", "home": "New Zealand", "away": "Egypt", "home_flag": "🇳🇿", "away_flag": "🇪🇬", "neutral": true, "home_win": 26.8, "draw": 28.1, "away_win": 45.1, "home_elo": 1618, "away_elo": 1714, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0, "city": "Vancouver", "country": "Canada", "kickoff_utc": "2026-06-22T01:00:00Z", "over25": 46.9, "under25": 53.1, "btts_yes": 54.5, "btts_no": 45.5}, {"date": "2026-06-21", "home": "Spain", "away": "Saudi Arabia", "home_flag": "🇪🇸", "away_flag": "🇸🇦", "neutral": true, "home_win": 59.3, "draw": 31.7, "away_win": 9.0, "home_elo": 1920, "away_elo": 1647, "h2h_hw": 100, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 1, "city": "Atlanta", "country": "United States", "kickoff_utc": "2026-06-21T16:00:00Z", "over25": 50.7, "under25": 49.3, "btts_yes": 45.7, "btts_no": 54.3}, {"date": "2026-06-21", "home": "Uruguay", "away": "Cape Verde", "home_flag": "🇺🇾", "away_flag": "🇨🇻", "neutral": true, "home_win": 52.5, "draw": 27.2, "away_win": 20.3, "home_elo": 1780, "away_elo": 1594, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0, "city": "Miami Gardens", "country": "United States", "kickoff_utc": "2026-06-21T22:00:00Z", "over25": 46.9, "under25": 53.1, "btts_yes": 45.6, "btts_no": 54.4}, {"date": "2026-06-22", "home": "Jordan", "away": "Algeria", "home_flag": "🇯🇴", "away_flag": "🇩🇿", "neutral": true, "home_win": 16.8, "draw": 29.4, "away_win": 53.8, "home_elo": 1621, "away_elo": 1726, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0, "city": "Santa Clara", "country": "United States", "kickoff_utc": "2026-06-23T03:00:00Z", "over25": 46.0, "under25": 54.0, "btts_yes": 55.9, "btts_no": 44.1}, {"date": "2026-06-22", "home": "Argentina", "away": "Austria", "home_flag": "🇦🇷", "away_flag": "🇦🇹", "neutral": true, "home_win": 50.7, "draw": 23.9, "away_win": 25.5, "home_elo": 1957, "away_elo": 1711, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0, "city": "Arlington", "country": "United States", "kickoff_utc": "2026-06-22T17:00:00Z", "over25": 56.6, "under25": 43.4, "btts_yes": 51.0, "btts_no": 49.0}, {"date": "2026-06-22", "home": "France", "away": "Iraq", "home_flag": "🇫🇷", "away_flag": "🇮🇶", "neutral": true, "home_win": 55.7, "draw": 26.7, "away_win": 17.6, "home_elo": 1914, "away_elo": 1657, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0, "city": "Philadelphia", "country": "United States", "kickoff_utc": "2026-06-22T21:00:00Z", "over25": 51.3, "under25": 48.7, "btts_yes": 54.7, "btts_no": 45.3}, {"date": "2026-06-22", "home": "Norway", "away": "Senegal", "home_flag": "🇳🇴", "away_flag": "🇸🇳", "neutral": true, "home_win": 30.9, "draw": 30.6, "away_win": 38.6, "home_elo": 1716, "away_elo": 1756, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0, "city": "East Rutherford", "country": "United States", "kickoff_utc": "2026-06-23T00:00:00Z", "over25": 47.5, "under25": 52.5, "btts_yes": 56.4, "btts_no": 43.6}, {"date": "2026-06-23", "home": "Portugal", "away": "Uzbekistan", "home_flag": "🇵🇹", "away_flag": "🇺🇿", "neutral": true, "home_win": 45.0, "draw": 30.4, "away_win": 24.6, "home_elo": 1826, "away_elo": 1690, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0, "city": "Houston", "country": "United States", "kickoff_utc": "2026-06-23T17:00:00Z", "over25": 46.3, "under25": 53.7, "btts_yes": 52.3, "btts_no": 47.7}, {"date": "2026-06-23", "home": "Colombia", "away": "DR Congo", "home_flag": "🇨🇴", "away_flag": "🇨🇩", "neutral": true, "home_win": 55.4, "draw": 26.1, "away_win": 18.5, "home_elo": 1833, "away_elo": 1638, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0, "city": "Zapopan", "country": "Mexico", "kickoff_utc": "2026-06-24T02:00:00Z", "over25": 47.0, "under25": 53.0, "btts_yes": 46.6, "btts_no": 53.4}, {"date": "2026-06-23", "home": "England", "away": "Ghana", "home_flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "away_flag": "🇬🇭", "neutral": true, "home_win": 66.4, "draw": 20.5, "away_win": 13.1, "home_elo": 1884, "away_elo": 1615, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0, "city": "Foxborough", "country": "United States", "kickoff_utc": "2026-06-23T20:00:00Z", "over25": 56.4, "under25": 43.6, "btts_yes": 55.8, "btts_no": 44.2}, {"date": "2026-06-23", "home": "Panama", "away": "Croatia", "home_flag": "🇵🇦", "away_flag": "🇭🇷", "neutral": true, "home_win": 12.6, "draw": 35.9, "away_win": 51.5, "home_elo": 1652, "away_elo": 1792, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0, "city": "Toronto", "country": "Canada", "kickoff_utc": "2026-06-23T23:00:00Z", "over25": 48.1, "under25": 51.9, "btts_yes": 59.3, "btts_no": 40.7}, {"date": "2026-06-24", "home": "Morocco", "away": "Haiti", "home_flag": "🇲🇦", "away_flag": "🇭🇹", "neutral": true, "home_win": 54.6, "draw": 32.7, "away_win": 12.7, "home_elo": 1818, "away_elo": 1557, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0, "city": "Atlanta", "country": "United States", "kickoff_utc": "2026-06-24T22:00:00Z", "over25": 47.7, "under25": 52.3, "btts_yes": 43.1, "btts_no": 56.9}, {"date": "2026-06-24", "home": "Scotland", "away": "Brazil", "home_flag": "🏴󠁧󠁢󠁳󠁣󠁴󠁿", "away_flag": "🇧🇷", "neutral": true, "home_win": 8.6, "draw": 22.7, "away_win": 68.7, "home_elo": 1666, "away_elo": 1863, "h2h_hw": 0, "h2h_dr": 25, "h2h_aw": 75, "h2h_n": 4, "city": "Miami Gardens", "country": "United States", "kickoff_utc": "2026-06-24T22:00:00Z", "over25": 44.5, "under25": 55.5, "btts_yes": 54.5, "btts_no": 45.5}, {"date": "2026-06-24", "home": "Bosnia and Herzegovina", "away": "Qatar", "home_flag": "🇧🇦", "away_flag": "🇶🇦", "neutral": true, "home_win": 23.1, "draw": 34.0, "away_win": 42.9, "home_elo": 1592, "away_elo": 1617, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0, "city": "Seattle", "country": "United States", "kickoff_utc": "2026-06-24T19:00:00Z", "over25": 45.9, "under25": 54.1, "btts_yes": 59.1, "btts_no": 40.9}, {"date": "2026-06-24", "home": "South Africa", "away": "South Korea", "home_flag": "🇿🇦", "away_flag": "🇰🇷", "neutral": true, "home_win": 11.0, "draw": 33.6, "away_win": 55.5, "home_elo": 1616, "away_elo": 1767, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0, "city": "Guadalupe", "country": "Mexico", "kickoff_utc": "2026-06-25T01:00:00Z", "over25": 44.7, "under25": 55.3, "btts_yes": 55.3, "btts_no": 44.7}, {"date": "2026-06-24", "home": "Mexico", "away": "Czech Republic", "home_flag": "🇲🇽", "away_flag": "🇨🇿", "neutral": false, "home_win": 56.5, "draw": 26.6, "away_win": 16.8, "home_elo": 1798, "away_elo": 1656, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0, "city": "Mexico City", "country": "Mexico", "kickoff_utc": "", "over25": 49.5, "under25": 50.5, "btts_yes": 50.2, "btts_no": 49.8}, {"date": "2026-06-24", "home": "Canada", "away": "Switzerland", "home_flag": "🇨🇦", "away_flag": "🇨🇭", "neutral": false, "home_win": 20.0, "draw": 38.6, "away_win": 41.4, "home_elo": 1705, "away_elo": 1770, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0, "city": "Vancouver", "country": "Canada", "kickoff_utc": "", "over25": 44.5, "under25": 55.5, "btts_yes": 58.7, "btts_no": 41.3}, {"date": "2026-06-25", "home": "Tunisia", "away": "Netherlands", "home_flag": "🇹🇳", "away_flag": "🇳🇱", "neutral": true, "home_win": 5.5, "draw": 16.0, "away_win": 78.5, "home_elo": 1644, "away_elo": 1835, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0, "city": "Kansas City", "country": "United States", "kickoff_utc": "2026-06-25T23:00:00Z", "over25": 55.2, "under25": 44.8, "btts_yes": 55.2, "btts_no": 44.8}, {"date": "2026-06-25", "home": "United States", "away": "Turkey", "home_flag": "🇺🇸", "away_flag": "🇹🇷", "neutral": false, "home_win": 34.9, "draw": 43.0, "away_win": 22.1, "home_elo": 1748, "away_elo": 1721, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 100, "h2h_n": 1, "city": "Inglewood", "country": "United States", "kickoff_utc": "", "over25": 43.5, "under25": 56.5, "btts_yes": 54.0, "btts_no": 46.0}, {"date": "2026-06-25", "home": "Paraguay", "away": "Australia", "home_flag": "🇵🇾", "away_flag": "🇦🇺", "neutral": true, "home_win": 12.6, "draw": 34.7, "away_win": 52.7, "home_elo": 1673, "away_elo": 1767, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0, "city": "Santa Clara", "country": "United States", "kickoff_utc": "2026-06-26T02:00:00Z", "over25": 51.0, "under25": 49.0, "btts_yes": 58.8, "btts_no": 41.2}, {"date": "2026-06-25", "home": "Curaçao", "away": "Ivory Coast", "home_flag": "🇨🇼", "away_flag": "🇨🇮", "neutral": true, "home_win": 7.5, "draw": 19.3, "away_win": 73.2, "home_elo": 1504, "away_elo": 1733, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0, "city": "Philadelphia", "country": "United States", "kickoff_utc": "2026-06-25T20:00:00Z", "over25": 51.8, "under25": 48.2, "btts_yes": 58.7, "btts_no": 41.3}, {"date": "2026-06-25", "home": "Ecuador", "away": "Germany", "home_flag": "🇪🇨", "away_flag": "🇩🇪", "neutral": true, "home_win": 13.0, "draw": 18.6, "away_win": 68.5, "home_elo": 1751, "away_elo": 1851, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 100, "h2h_n": 1, "city": "East Rutherford", "country": "United States", "kickoff_utc": "2026-06-25T20:00:00Z", "over25": 57.5, "under25": 42.5, "btts_yes": 59.9, "btts_no": 40.1}, {"date": "2026-06-25", "home": "Japan", "away": "Sweden", "home_flag": "🇯🇵", "away_flag": "🇸🇪", "neutral": true, "home_win": 42.0, "draw": 34.5, "away_win": 23.4, "home_elo": 1817, "away_elo": 1690, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0, "city": "Arlington", "country": "United States", "kickoff_utc": "2026-06-25T23:00:00Z", "over25": 52.4, "under25": 47.6, "btts_yes": 59.8, "btts_no": 40.2}, {"date": "2026-06-26", "home": "Senegal", "away": "Iraq", "home_flag": "🇸🇳", "away_flag": "🇮🇶", "neutral": true, "home_win": 37.2, "draw": 35.9, "away_win": 26.8, "home_elo": 1756, "away_elo": 1657, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0, "city": "Toronto", "country": "Canada", "kickoff_utc": "2026-06-26T19:00:00Z", "over25": 43.8, "under25": 56.2, "btts_yes": 61.4, "btts_no": 38.6}, {"date": "2026-06-26", "home": "Norway", "away": "France", "home_flag": "🇳🇴", "away_flag": "🇫🇷", "neutral": true, "home_win": 11.2, "draw": 20.1, "away_win": 68.7, "home_elo": 1716, "away_elo": 1914, "h2h_hw": 17, "h2h_dr": 17, "h2h_aw": 67, "h2h_n": 6, "city": "Foxborough", "country": "United States", "kickoff_utc": "2026-06-26T19:00:00Z", "over25": 49.1, "under25": 50.9, "btts_yes": 58.5, "btts_no": 41.5}, {"date": "2026-06-26", "home": "Uruguay", "away": "Spain", "home_flag": "🇺🇾", "away_flag": "🇪🇸", "neutral": true, "home_win": 12.3, "draw": 23.0, "away_win": 64.7, "home_elo": 1780, "away_elo": 1920, "h2h_hw": 0, "h2h_dr": 67, "h2h_aw": 33, "h2h_n": 3, "city": "Zapopan", "country": "Mexico", "kickoff_utc": "2026-06-27T00:00:00Z", "over25": 46.6, "under25": 53.4, "btts_yes": 49.3, "btts_no": 50.7}, {"date": "2026-06-26", "home": "New Zealand", "away": "Belgium", "home_flag": "🇳🇿", "away_flag": "🇧🇪", "neutral": true, "home_win": 12.5, "draw": 30.6, "away_win": 56.8, "home_elo": 1618, "away_elo": 1807, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0, "city": "Vancouver", "country": "Canada", "kickoff_utc": "2026-06-27T03:00:00Z", "over25": 47.6, "under25": 52.4, "btts_yes": 54.0, "btts_no": 46.0}, {"date": "2026-06-26", "home": "Egypt", "away": "Iran", "home_flag": "🇪🇬", "away_flag": "🇮🇷", "neutral": true, "home_win": 16.4, "draw": 36.1, "away_win": 47.5, "home_elo": 1714, "away_elo": 1778, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0, "city": "Seattle", "country": "United States", "kickoff_utc": "2026-06-27T03:00:00Z", "over25": 47.2, "under25": 52.8, "btts_yes": 60.2, "btts_no": 39.8}, {"date": "2026-06-26", "home": "Cape Verde", "away": "Saudi Arabia", "home_flag": "🇨🇻", "away_flag": "🇸🇦", "neutral": true, "home_win": 23.5, "draw": 33.0, "away_win": 43.5, "home_elo": 1594, "away_elo": 1647, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0, "city": "Houston", "country": "United States", "kickoff_utc": "2026-06-27T00:00:00Z", "over25": 42.9, "under25": 57.1, "btts_yes": 54.5, "btts_no": 45.5}, {"date": "2026-06-27", "home": "DR Congo", "away": "Uzbekistan", "home_flag": "🇨🇩", "away_flag": "🇺🇿", "neutral": true, "home_win": 18.3, "draw": 32.6, "away_win": 49.1, "home_elo": 1638, "away_elo": 1690, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0, "city": "Atlanta", "country": "United States", "kickoff_utc": "2026-06-27T23:30:00Z", "over25": 42.0, "under25": 58.0, "btts_yes": 53.9, "btts_no": 46.1}, {"date": "2026-06-27", "home": "Colombia", "away": "Portugal", "home_flag": "🇨🇴", "away_flag": "🇵🇹", "neutral": true, "home_win": 25.4, "draw": 31.1, "away_win": 43.5, "home_elo": 1833, "away_elo": 1826, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0, "city": "Miami Gardens", "country": "United States", "kickoff_utc": "2026-06-27T23:30:00Z", "over25": 50.2, "under25": 49.8, "btts_yes": 59.6, "btts_no": 40.4}, {"date": "2026-06-27", "home": "Panama", "away": "England", "home_flag": "🇵🇦", "away_flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "neutral": true, "home_win": 6.0, "draw": 14.9, "away_win": 79.1, "home_elo": 1652, "away_elo": 1884, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 100, "h2h_n": 1, "city": "East Rutherford", "country": "United States", "kickoff_utc": "2026-06-27T21:00:00Z", "over25": 59.0, "under25": 41.0, "btts_yes": 61.7, "btts_no": 38.3}, {"date": "2026-06-27", "home": "Algeria", "away": "Austria", "home_flag": "🇩🇿", "away_flag": "🇦🇹", "neutral": true, "home_win": 23.0, "draw": 34.8, "away_win": 42.2, "home_elo": 1726, "away_elo": 1711, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 100, "h2h_n": 1, "city": "Kansas City", "country": "United States", "kickoff_utc": "2026-06-28T02:00:00Z", "over25": 46.6, "under25": 53.4, "btts_yes": 57.1, "btts_no": 42.9}, {"date": "2026-06-27", "home": "Jordan", "away": "Argentina", "home_flag": "🇯🇴", "away_flag": "🇦🇷", "neutral": true, "home_win": 4.0, "draw": 14.1, "away_win": 81.9, "home_elo": 1621, "away_elo": 1957, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0, "city": "Arlington", "country": "United States", "kickoff_utc": "2026-06-28T02:00:00Z", "over25": 53.0, "under25": 47.0, "btts_yes": 50.8, "btts_no": 49.2}, {"date": "2026-06-27", "home": "Croatia", "away": "Ghana", "home_flag": "🇭🇷", "away_flag": "🇬🇭", "neutral": true, "home_win": 51.7, "draw": 27.4, "away_win": 20.9, "home_elo": 1792, "away_elo": 1615, "h2h_hw": 0, "h2h_dr": 0, "h2h_aw": 0, "h2h_n": 0, "city": "Philadelphia", "country": "United States", "kickoff_utc": "2026-06-27T21:00:00Z", "over25": 46.5, "under25": 53.5, "btts_yes": 51.0, "btts_no": 49.0}];
 const VALUE_BETS = [{"home": "Germany", "away": "Ivory Coast", "date": "2026-06-20", "outcome": "Under 2.5", "model_p": 45.4, "market_p": 39.6, "edge": 5.8, "best_odds": 2.56, "best_book": "Matchbook", "dk_odds": null}, {"home": "Germany", "away": "Ivory Coast", "date": "2026-06-20", "outcome": "Draw", "model_p": 25.3, "market_p": 19.8, "edge": 5.4, "best_odds": 5.1, "best_book": "Smarkets", "dk_odds": 4.9}, {"home": "Germany", "away": "Ivory Coast", "date": "2026-06-20", "outcome": "Away Win", "model_p": 18.5, "market_p": 13.9, "edge": 4.6, "best_odds": 7.8, "best_book": "Betfair", "dk_odds": 7.0}, {"home": "Bosnia and Herzegovina", "away": "Qatar", "date": "2026-06-24", "outcome": "Away Win", "model_p": 42.9, "market_p": 13.6, "edge": 29.3, "best_odds": 8.0, "best_book": "Casumo", "dk_odds": 6.5}, {"home": "Paraguay", "away": "Australia", "date": "2026-06-26", "outcome": "Away Win", "model_p": 52.7, "market_p": 24.3, "edge": 28.4, "best_odds": 4.3, "best_book": "Betfair", "dk_odds": 3.85}, {"home": "Egypt", "away": "Iran", "date": "2026-06-27", "outcome": "Away Win", "model_p": 47.5, "market_p": 24.6, "edge": 22.9, "best_odds": 4.1, "best_book": "Tipico", "dk_odds": 4.0}, {"home": "Spain", "away": "Saudi Arabia", "date": "2026-06-21", "outcome": "Draw", "model_p": 31.7, "market_p": 9.4, "edge": 22.3, "best_odds": 12.0, "best_book": "Sky Bet", "dk_odds": 10.5}, {"home": "Belgium", "away": "Iran", "date": "2026-06-21", "outcome": "Away Win", "model_p": 34.1, "market_p": 12.6, "edge": 21.5, "best_odds": 8.4, "best_book": "Coolbet", "dk_odds": 7.5}, {"home": "DR Congo", "away": "Uzbekistan", "date": "2026-06-27", "outcome": "Away Win", "model_p": 49.1, "market_p": 28.2, "edge": 20.9, "best_odds": 3.6, "best_book": "Coolbet", "dk_odds": 3.4}, {"home": "Morocco", "away": "Haiti", "date": "2026-06-24", "outcome": "Draw", "model_p": 32.7, "market_p": 14.0, "edge": 18.7, "best_odds": 7.6, "best_book": "Betfair", "dk_odds": 7.0}, {"home": "France", "away": "Iraq", "date": "2026-06-22", "outcome": "Draw", "model_p": 26.7, "market_p": 8.5, "edge": 18.3, "best_odds": 13.5, "best_book": "1xBet", "dk_odds": 12.0}, {"home": "Paraguay", "away": "Australia", "date": "2026-06-26", "outcome": "Over 2.5", "model_p": 51.0, "market_p": 32.7, "edge": 18.3, "best_odds": 2.8, "best_book": "William Hill", "dk_odds": null}, {"home": "Portugal", "away": "Uzbekistan", "date": "2026-06-23", "outcome": "Away Win", "model_p": 24.6, "market_p": 6.4, "edge": 18.2, "best_odds": 19.5, "best_book": "1xBet", "dk_odds": 15.0}, {"home": "Senegal", "away": "Iraq", "date": "2026-06-26", "outcome": "Draw", "model_p": 35.9, "market_p": 17.7, "edge": 18.2, "best_odds": 5.8, "best_book": "Tipico", "dk_odds": 5.5}, {"home": "France", "away": "Iraq", "date": "2026-06-22", "outcome": "Under 2.5", "model_p": 48.7, "market_p": 30.6, "edge": 18.1, "best_odds": 3.15, "best_book": "Betsson", "dk_odds": null}, {"home": "Senegal", "away": "Iraq", "date": "2026-06-26", "outcome": "Away Win", "model_p": 26.8, "market_p": 9.1, "edge": 17.8, "best_odds": 12.0, "best_book": "Coolbet", "dk_odds": 11.0}, {"home": "Belgium", "away": "Iran", "date": "2026-06-21", "outcome": "Draw", "model_p": 37.3, "market_p": 20.9, "edge": 16.4, "best_odds": 4.85, "best_book": "Unibet (FR)", "dk_odds": 4.8}, {"home": "Portugal", "away": "Uzbekistan", "date": "2026-06-23", "outcome": "Draw", "model_p": 30.4, "market_p": 14.0, "edge": 16.4, "best_odds": 7.6, "best_book": "Unibet (FR)", "dk_odds": 7.0}];
+const WC26_ACC   = {"total": 28, "correct": 12, "pct": 42.9, "decisive_total": 18, "decisive_correct": 12, "decisive_pct": 66.7, "draw_total": 10, "draw_correct": 0, "wc26_draw_pct": 35.7, "hist_draw_pct": 23.6, "results": [{"home": "Mexico", "away": "South Africa", "score": "2-0", "actual": "Home Win", "predicted": "Home Win", "hit": true, "hw": 55.5, "dr": 32.3, "aw": 12.2}, {"home": "South Korea", "away": "Czech Republic", "score": "2-1", "actual": "Home Win", "predicted": "Home Win", "hit": true, "hw": 45.5, "dr": 27.1, "aw": 27.4}, {"home": "Canada", "away": "Bosnia and Herzegovina", "score": "1-1", "actual": "Draw", "predicted": "Home Win", "hit": false, "hw": 50.5, "dr": 30.9, "aw": 18.6}, {"home": "United States", "away": "Paraguay", "score": "4-1", "actual": "Home Win", "predicted": "Draw", "hit": false, "hw": 40.6, "dr": 41.8, "aw": 17.6}, {"home": "Qatar", "away": "Switzerland", "score": "1-1", "actual": "Draw", "predicted": "Away Win", "hit": false, "hw": 10.1, "dr": 28.0, "aw": 61.8}, {"home": "Brazil", "away": "Morocco", "score": "1-1", "actual": "Draw", "predicted": "Away Win", "hit": false, "hw": 28.1, "dr": 29.6, "aw": 42.4}, {"home": "Haiti", "away": "Scotland", "score": "0-1", "actual": "Away Win", "predicted": "Away Win", "hit": true, "hw": 17.7, "dr": 33.9, "aw": 48.4}, {"home": "Australia", "away": "Turkey", "score": "2-0", "actual": "Home Win", "predicted": "Draw", "hit": false, "hw": 24.3, "dr": 48.5, "aw": 27.3}, {"home": "Germany", "away": "Curaçao", "score": "7-1", "actual": "Home Win", "predicted": "Home Win", "hit": true, "hw": 71.5, "dr": 22.8, "aw": 5.7}, {"home": "Ivory Coast", "away": "Ecuador", "score": "1-0", "actual": "Home Win", "predicted": "Draw", "hit": false, "hw": 22.4, "dr": 40.8, "aw": 36.8}, {"home": "Netherlands", "away": "Japan", "score": "2-2", "actual": "Draw", "predicted": "Away Win", "hit": false, "hw": 30.6, "dr": 34.6, "aw": 34.8}, {"home": "Sweden", "away": "Tunisia", "score": "5-1", "actual": "Home Win", "predicted": "Draw", "hit": false, "hw": 29.4, "dr": 39.6, "aw": 31.0}, {"home": "Belgium", "away": "Egypt", "score": "1-1", "actual": "Draw", "predicted": "Home Win", "hit": false, "hw": 45.3, "dr": 33.5, "aw": 21.2}, {"home": "Iran", "away": "New Zealand", "score": "2-2", "actual": "Draw", "predicted": "Home Win", "hit": false, "hw": 56.6, "dr": 23.7, "aw": 19.7}, {"home": "Spain", "away": "Cape Verde", "score": "0-0", "actual": "Draw", "predicted": "Home Win", "hit": false, "hw": 63.0, "dr": 24.9, "aw": 12.2}, {"home": "Saudi Arabia", "away": "Uruguay", "score": "1-1", "actual": "Draw", "predicted": "Away Win", "hit": false, "hw": 12.3, "dr": 32.7, "aw": 55.0}, {"home": "France", "away": "Senegal", "score": "3-1", "actual": "Home Win", "predicted": "Home Win", "hit": true, "hw": 41.0, "dr": 39.6, "aw": 19.4}, {"home": "Iraq", "away": "Norway", "score": "1-4", "actual": "Away Win", "predicted": "Away Win", "hit": true, "hw": 17.5, "dr": 21.9, "aw": 60.6}, {"home": "Argentina", "away": "Algeria", "score": "3-0", "actual": "Home Win", "predicted": "Home Win", "hit": true, "hw": 55.9, "dr": 27.9, "aw": 16.2}, {"home": "Austria", "away": "Jordan", "score": "3-1", "actual": "Home Win", "predicted": "Home Win", "hit": true, "hw": 48.6, "dr": 29.0, "aw": 22.4}, {"home": "Portugal", "away": "DR Congo", "score": "1-1", "actual": "Draw", "predicted": "Home Win", "hit": false, "hw": 55.4, "dr": 23.7, "aw": 20.9}, {"home": "Uzbekistan", "away": "Colombia", "score": "1-3", "actual": "Away Win", "predicted": "Away Win", "hit": true, "hw": 10.1, "dr": 29.4, "aw": 60.5}, {"home": "England", "away": "Croatia", "score": "4-2", "actual": "Home Win", "predicted": "Home Win", "hit": true, "hw": 47.6, "dr": 34.9, "aw": 17.5}, {"home": "Ghana", "away": "Panama", "score": "1-0", "actual": "Home Win", "predicted": "Away Win", "hit": false, "hw": 28.5, "dr": 35.4, "aw": 36.1}, {"home": "Czech Republic", "away": "South Africa", "score": "1-1", "actual": "Draw", "predicted": "Away Win", "hit": false, "hw": 31.0, "dr": 31.7, "aw": 37.3}, {"home": "Mexico", "away": "South Korea", "score": "1-0", "actual": "Home Win", "predicted": "Draw", "hit": false, "hw": 35.0, "dr": 46.2, "aw": 18.8}, {"home": "Switzerland", "away": "Bosnia and Herzegovina", "score": "4-1", "actual": "Home Win", "predicted": "Home Win", "hit": true, "hw": 52.3, "dr": 26.8, "aw": 20.9}, {"home": "Canada", "away": "Qatar", "score": "6-0", "actual": "Home Win", "predicted": "Home Win", "hit": true, "hw": 51.6, "dr": 33.9, "aw": 14.6}]};
 
 function todayISO() {
   return new Date().toISOString().slice(0, 10);
@@ -511,15 +581,50 @@ function render() {
   const byDate = {};
   MATCHES.forEach(m => { if (!byDate[m.date]) byDate[m.date] = []; byDate[m.date].push(m); });
 
+  const today    = todayISO();
+  const tomorrow = (function() {
+    const d = new Date(today + 'T12:00:00'); d.setDate(d.getDate() + 1);
+    return d.toISOString().slice(0, 10);
+  })();
+
+  const sortedDates = Object.keys(byDate).sort();
+
+  // Build tab labels: Today, Tomorrow, then formatted dates for the rest
+  function tabLabel(iso) {
+    if (iso === today)    return 'Today';
+    if (iso === tomorrow) return 'Tomorrow';
+    return fmtShort(iso);
+  }
+
+  // Default to today's tab if it exists, otherwise the first date
+  const defaultTab = byDate[today] ? today : sortedDates[0];
+
   const app = document.getElementById('app');
-  Object.keys(byDate).sort().forEach(dateStr => {
-    const todayTag = isToday(dateStr) ? '<span class="today-tag">TODAY</span>' : '';
-    const cards = byDate[dateStr].map(card).join('');
-    app.innerHTML += `
-      <section class="date-section">
-        <div class="date-label">${fmtDate(dateStr)}${todayTag}</div>
-        <div class="match-grid">${cards}</div>
-      </section>`;
+
+  const tabsHtml = sortedDates.map(d =>
+    `<button class="day-tab${d === defaultTab ? ' active' : ''}" data-date="${d}">${tabLabel(d)}</button>`
+  ).join('');
+
+  const panelsHtml = sortedDates.map(d => {
+    const cards = byDate[d].map(card).join('');
+    return `<div class="day-panel${d === defaultTab ? ' active' : ''}" data-date="${d}">
+      <div class="match-grid">${cards}</div>
+    </div>`;
+  }).join('');
+
+  app.innerHTML = `<div class="day-tabs">${tabsHtml}</div>${panelsHtml}`;
+
+  app.querySelectorAll('.day-tab').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const target = this.dataset.date;
+      app.querySelectorAll('.day-tab').forEach(b => b.classList.toggle('active', b.dataset.date === target));
+      app.querySelectorAll('.day-panel').forEach(p => p.classList.toggle('active', p.dataset.date === target));
+      // Trigger reveal for newly visible cards
+      app.querySelectorAll('.day-panel.active .card:not(.visible)').forEach((el, i) => {
+        el.style.transitionDelay = (i * 40) + 'ms';
+        setTimeout(() => el.classList.add('visible'), 10);
+      });
+    });
   });
 }
 
@@ -562,7 +667,54 @@ function renderTicker() {
   wrap.innerHTML = '<div class="ticker-bar"><div class="ticker-track">' + items + items + items + '</div></div>';
 }
 
+function renderAccuracy() {
+  const el = document.getElementById('acc-section');
+  if (!el || !WC26_ACC || WC26_ACC.total === 0) return;
+  const a = WC26_ACC;
+  const histW = a.hist_draw_pct;
+  const currW = a.wc26_draw_pct;
+  const maxW  = Math.max(histW, currW, 40);
+
+  el.innerHTML = `
+    <div class="acc-card reveal">
+      <div class="acc-card-header">
+        <span class="acc-card-title">WC 2026 Live Performance</span>
+        <span class="acc-card-sub">${a.total} games played so far</span>
+      </div>
+      <div class="acc-stats">
+        <div class="acc-stat">
+          <div class="acc-stat-val ${a.pct >= 55 ? 'green' : a.pct >= 40 ? 'amber' : 'red'}">${a.pct}%</div>
+          <div class="acc-stat-lbl">Overall<br>${a.correct}/${a.total} correct</div>
+        </div>
+        <div class="acc-stat">
+          <div class="acc-stat-val green">${a.decisive_pct}%</div>
+          <div class="acc-stat-lbl">When someone wins<br>${a.decisive_correct}/${a.decisive_total} correct</div>
+        </div>
+        <div class="acc-stat">
+          <div class="acc-stat-val red">${a.draw_correct}/${a.draw_total}</div>
+          <div class="acc-stat-lbl">Draws called<br>model's blind spot</div>
+        </div>
+      </div>
+      <div class="draw-comparison">
+        <div class="draw-row">
+          <span class="draw-row-label">Historical WC avg draw rate</span>
+          <div class="draw-track"><div class="draw-fill-hist" style="width:${(histW/maxW*100).toFixed(1)}%"></div></div>
+          <span class="draw-pct">${histW}%</span>
+        </div>
+        <div class="draw-row">
+          <span class="draw-row-label">WC 2026 draw rate so far</span>
+          <div class="draw-track"><div class="draw-fill-current" style="width:${(currW/maxW*100).toFixed(1)}%"></div></div>
+          <span class="draw-pct amber">${currW}%</span>
+        </div>
+      </div>
+      <p class="acc-note">
+        This tournament has been unusually draw-heavy — <strong>${currW}%</strong> of games have ended level, the highest rate at a World Cup since France '98 (29.7%). That's the main reason for the lower overall number. Strip the draws out and the model hits <strong>${a.decisive_pct}%</strong> on games with a clear winner, above its training accuracy.
+      </p>
+    </div>`;
+}
+
 renderTicker();
+renderAccuracy();
 renderEdges();
 render();
 
@@ -594,8 +746,8 @@ render();
     });
   }, { threshold: 0.08 });
 
-  // Stagger cards within each grid
-  document.querySelectorAll('.match-grid, .chips-grid').forEach(grid => {
+  // Stagger cards — only in active panel and chips grid
+  document.querySelectorAll('.day-panel.active .match-grid, .chips-grid').forEach(grid => {
     Array.from(grid.children).forEach((el, i) => {
       el.classList.add('reveal');
       el.style.transitionDelay = (i * 55) + 'ms';
