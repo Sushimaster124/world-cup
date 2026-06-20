@@ -1,0 +1,1186 @@
+{
+  "generated": "2026-06-20T15:04:11.851925",
+  "min_edge": 0.04,
+  "regions": "us,uk,eu",
+  "results": [
+    {
+      "home": "Netherlands",
+      "away": "Sweden",
+      "commence": "2026-06-20T17:00:00Z",
+      "n_books": 9,
+      "model": {
+        "Away Win": 19.8,
+        "Draw": 31.3,
+        "Home Win": 48.8
+      },
+      "market": {
+        "Home Win": 79.1,
+        "Away Win": 10.2,
+        "Draw": 10.7
+      },
+      "edges": [
+        {
+          "outcome": "Draw",
+          "model_p": 31.3,
+          "market_p": 10.7,
+          "edge": 20.6,
+          "best_odds": 1001.0,
+          "best_book": "Betway"
+        },
+        {
+          "outcome": "Away Win",
+          "model_p": 19.8,
+          "market_p": 10.2,
+          "edge": 9.6,
+          "best_odds": 1001.0,
+          "best_book": "Betway"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "Germany",
+      "away": "Ivory Coast",
+      "commence": "2026-06-20T20:00:00Z",
+      "n_books": 47,
+      "model": {
+        "Away Win": 18.5,
+        "Draw": 25.3,
+        "Home Win": 56.2
+      },
+      "market": {
+        "Home Win": 67.0,
+        "Away Win": 13.6,
+        "Draw": 19.4
+      },
+      "edges": [
+        {
+          "outcome": "Draw",
+          "model_p": 25.3,
+          "market_p": 19.4,
+          "edge": 5.8,
+          "best_odds": 5.3,
+          "best_book": "Betfair"
+        },
+        {
+          "outcome": "Away Win",
+          "model_p": 18.5,
+          "market_p": 13.6,
+          "edge": 4.9,
+          "best_odds": 7.8,
+          "best_book": "Smarkets"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "Ecuador",
+      "away": "Cura\u00e7ao",
+      "commence": "2026-06-21T00:00:00Z",
+      "n_books": 48,
+      "model": {
+        "Away Win": 12.2,
+        "Draw": 22.6,
+        "Home Win": 65.2
+      },
+      "market": {
+        "Away Win": 4.6,
+        "Home Win": 84.8,
+        "Draw": 10.6
+      },
+      "edges": [
+        {
+          "outcome": "Draw",
+          "model_p": 22.6,
+          "market_p": 10.6,
+          "edge": 11.9,
+          "best_odds": 10.5,
+          "best_book": "PMU (FR)"
+        },
+        {
+          "outcome": "Away Win",
+          "model_p": 12.2,
+          "market_p": 4.6,
+          "edge": 7.7,
+          "best_odds": 25.0,
+          "best_book": "BetRivers"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "Tunisia",
+      "away": "Japan",
+      "commence": "2026-06-21T04:00:00Z",
+      "n_books": 48,
+      "model": {
+        "Away Win": 67.3,
+        "Draw": 24.9,
+        "Home Win": 7.8
+      },
+      "market": {
+        "Away Win": 64.1,
+        "Home Win": 13.1,
+        "Draw": 22.8
+      },
+      "edges": [],
+      "has_value": false
+    },
+    {
+      "home": "Spain",
+      "away": "Saudi Arabia",
+      "commence": "2026-06-21T16:00:00Z",
+      "n_books": 48,
+      "model": {
+        "Away Win": 9.0,
+        "Draw": 31.7,
+        "Home Win": 59.3
+      },
+      "market": {
+        "Away Win": 3.8,
+        "Home Win": 86.7,
+        "Draw": 9.4
+      },
+      "edges": [
+        {
+          "outcome": "Draw",
+          "model_p": 31.7,
+          "market_p": 9.4,
+          "edge": 22.3,
+          "best_odds": 12.0,
+          "best_book": "Sky Bet"
+        },
+        {
+          "outcome": "Away Win",
+          "model_p": 9.0,
+          "market_p": 3.8,
+          "edge": 5.2,
+          "best_odds": 35.0,
+          "best_book": "1xBet"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "Belgium",
+      "away": "Iran",
+      "commence": "2026-06-21T19:00:00Z",
+      "n_books": 48,
+      "model": {
+        "Away Win": 34.1,
+        "Draw": 37.3,
+        "Home Win": 28.6
+      },
+      "market": {
+        "Home Win": 67.1,
+        "Away Win": 12.3,
+        "Draw": 20.6
+      },
+      "edges": [
+        {
+          "outcome": "Away Win",
+          "model_p": 34.1,
+          "market_p": 12.3,
+          "edge": 21.8,
+          "best_odds": 9.0,
+          "best_book": "Unibet (NL)"
+        },
+        {
+          "outcome": "Draw",
+          "model_p": 37.3,
+          "market_p": 20.6,
+          "edge": 16.7,
+          "best_odds": 4.9,
+          "best_book": "Unibet (NL)"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "Uruguay",
+      "away": "Cape Verde",
+      "commence": "2026-06-21T22:00:00Z",
+      "n_books": 48,
+      "model": {
+        "Away Win": 20.3,
+        "Draw": 27.2,
+        "Home Win": 52.5
+      },
+      "market": {
+        "Away Win": 11.5,
+        "Home Win": 65.9,
+        "Draw": 22.6
+      },
+      "edges": [
+        {
+          "outcome": "Away Win",
+          "model_p": 20.3,
+          "market_p": 11.5,
+          "edge": 8.8,
+          "best_odds": 9.6,
+          "best_book": "Smarkets"
+        },
+        {
+          "outcome": "Draw",
+          "model_p": 27.2,
+          "market_p": 22.6,
+          "edge": 4.6,
+          "best_odds": 4.5,
+          "best_book": "Unibet (NL)"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "New Zealand",
+      "away": "Egypt",
+      "commence": "2026-06-22T01:00:00Z",
+      "n_books": 48,
+      "model": {
+        "Away Win": 45.1,
+        "Draw": 28.1,
+        "Home Win": 26.8
+      },
+      "market": {
+        "Away Win": 59.7,
+        "Home Win": 16.9,
+        "Draw": 23.4
+      },
+      "edges": [
+        {
+          "outcome": "Home Win",
+          "model_p": 26.8,
+          "market_p": 16.9,
+          "edge": 9.9,
+          "best_odds": 6.2,
+          "best_book": "Betsson"
+        },
+        {
+          "outcome": "Draw",
+          "model_p": 28.1,
+          "market_p": 23.4,
+          "edge": 4.7,
+          "best_odds": 4.3,
+          "best_book": "Betfair"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "Argentina",
+      "away": "Austria",
+      "commence": "2026-06-22T17:00:00Z",
+      "n_books": 48,
+      "model": {
+        "Away Win": 25.5,
+        "Draw": 23.9,
+        "Home Win": 50.7
+      },
+      "market": {
+        "Home Win": 60.4,
+        "Away Win": 15.5,
+        "Draw": 24.1
+      },
+      "edges": [
+        {
+          "outcome": "Away Win",
+          "model_p": 25.5,
+          "market_p": 15.5,
+          "edge": 10.0,
+          "best_odds": 6.8,
+          "best_book": "Smarkets"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "France",
+      "away": "Iraq",
+      "commence": "2026-06-22T21:00:00Z",
+      "n_books": 48,
+      "model": {
+        "Away Win": 17.6,
+        "Draw": 26.7,
+        "Home Win": 55.7
+      },
+      "market": {
+        "Home Win": 88.1,
+        "Away Win": 3.4,
+        "Draw": 8.5
+      },
+      "edges": [
+        {
+          "outcome": "Draw",
+          "model_p": 26.7,
+          "market_p": 8.5,
+          "edge": 18.3,
+          "best_odds": 13.5,
+          "best_book": "1xBet"
+        },
+        {
+          "outcome": "Away Win",
+          "model_p": 17.6,
+          "market_p": 3.4,
+          "edge": 14.2,
+          "best_odds": 41.0,
+          "best_book": "1xBet"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "Norway",
+      "away": "Senegal",
+      "commence": "2026-06-23T00:00:00Z",
+      "n_books": 47,
+      "model": {
+        "Away Win": 38.6,
+        "Draw": 30.6,
+        "Home Win": 30.9
+      },
+      "market": {
+        "Home Win": 42.4,
+        "Away Win": 30.2,
+        "Draw": 27.5
+      },
+      "edges": [
+        {
+          "outcome": "Away Win",
+          "model_p": 38.6,
+          "market_p": 30.2,
+          "edge": 8.4,
+          "best_odds": 3.35,
+          "best_book": "Smarkets"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "Jordan",
+      "away": "Algeria",
+      "commence": "2026-06-23T03:00:00Z",
+      "n_books": 47,
+      "model": {
+        "Away Win": 53.8,
+        "Draw": 29.4,
+        "Home Win": 16.8
+      },
+      "market": {
+        "Away Win": 61.1,
+        "Home Win": 15.8,
+        "Draw": 23.0
+      },
+      "edges": [
+        {
+          "outcome": "Draw",
+          "model_p": 29.4,
+          "market_p": 23.0,
+          "edge": 6.4,
+          "best_odds": 4.5,
+          "best_book": "Unibet (NL)"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "Portugal",
+      "away": "Uzbekistan",
+      "commence": "2026-06-23T17:00:00Z",
+      "n_books": 47,
+      "model": {
+        "Away Win": 24.6,
+        "Draw": 30.4,
+        "Home Win": 45.0
+      },
+      "market": {
+        "Home Win": 79.6,
+        "Away Win": 6.4,
+        "Draw": 14.0
+      },
+      "edges": [
+        {
+          "outcome": "Away Win",
+          "model_p": 24.6,
+          "market_p": 6.4,
+          "edge": 18.2,
+          "best_odds": 19.5,
+          "best_book": "1xBet"
+        },
+        {
+          "outcome": "Draw",
+          "model_p": 30.4,
+          "market_p": 14.0,
+          "edge": 16.4,
+          "best_odds": 7.6,
+          "best_book": "Unibet (FR)"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "England",
+      "away": "Ghana",
+      "commence": "2026-06-23T20:00:00Z",
+      "n_books": 47,
+      "model": {
+        "Away Win": 13.1,
+        "Draw": 20.5,
+        "Home Win": 66.4
+      },
+      "market": {
+        "Home Win": 79.0,
+        "Away Win": 6.6,
+        "Draw": 14.4
+      },
+      "edges": [
+        {
+          "outcome": "Away Win",
+          "model_p": 13.1,
+          "market_p": 6.6,
+          "edge": 6.5,
+          "best_odds": 18.0,
+          "best_book": "Unibet (NL)"
+        },
+        {
+          "outcome": "Draw",
+          "model_p": 20.5,
+          "market_p": 14.4,
+          "edge": 6.1,
+          "best_odds": 7.5,
+          "best_book": "Unibet (NL)"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "Panama",
+      "away": "Croatia",
+      "commence": "2026-06-23T23:00:00Z",
+      "n_books": 47,
+      "model": {
+        "Away Win": 51.5,
+        "Draw": 35.9,
+        "Home Win": 12.6
+      },
+      "market": {
+        "Away Win": 61.9,
+        "Home Win": 14.3,
+        "Draw": 23.9
+      },
+      "edges": [
+        {
+          "outcome": "Draw",
+          "model_p": 35.9,
+          "market_p": 23.9,
+          "edge": 12.0,
+          "best_odds": 4.2,
+          "best_book": "Coolbet"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "Colombia",
+      "away": "DR Congo",
+      "commence": "2026-06-24T02:00:00Z",
+      "n_books": 45,
+      "model": {
+        "Away Win": 18.5,
+        "Draw": 26.1,
+        "Home Win": 55.4
+      },
+      "market": {
+        "Home Win": 63.7,
+        "Away Win": 13.5,
+        "Draw": 22.8
+      },
+      "edges": [
+        {
+          "outcome": "Away Win",
+          "model_p": 18.5,
+          "market_p": 13.5,
+          "edge": 5.0,
+          "best_odds": 7.8,
+          "best_book": "Betfair"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "Bosnia and Herzegovina",
+      "away": "Qatar",
+      "commence": "2026-06-24T19:00:00Z",
+      "n_books": 47,
+      "model": {
+        "Away Win": 42.9,
+        "Draw": 34.0,
+        "Home Win": 23.1
+      },
+      "market": {
+        "Home Win": 66.8,
+        "Away Win": 13.6,
+        "Draw": 19.6
+      },
+      "edges": [
+        {
+          "outcome": "Away Win",
+          "model_p": 42.9,
+          "market_p": 13.6,
+          "edge": 29.3,
+          "best_odds": 8.0,
+          "best_book": "Casumo"
+        },
+        {
+          "outcome": "Draw",
+          "model_p": 34.0,
+          "market_p": 19.6,
+          "edge": 14.4,
+          "best_odds": 5.1,
+          "best_book": "Casumo"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "Switzerland",
+      "away": "Canada",
+      "commence": "2026-06-24T19:00:00Z",
+      "n_books": 47,
+      "model": {
+        "Away Win": 34.3,
+        "Draw": 34.9,
+        "Home Win": 30.8
+      },
+      "market": {
+        "Away Win": 29.9,
+        "Home Win": 39.1,
+        "Draw": 31.0
+      },
+      "edges": [
+        {
+          "outcome": "Away Win",
+          "model_p": 34.3,
+          "market_p": 29.9,
+          "edge": 4.4,
+          "best_odds": 3.35,
+          "best_book": "Smarkets"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "Scotland",
+      "away": "Brazil",
+      "commence": "2026-06-24T22:00:00Z",
+      "n_books": 47,
+      "model": {
+        "Away Win": 68.7,
+        "Draw": 22.7,
+        "Home Win": 8.6
+      },
+      "market": {
+        "Away Win": 69.0,
+        "Home Win": 12.5,
+        "Draw": 18.5
+      },
+      "edges": [
+        {
+          "outcome": "Draw",
+          "model_p": 22.7,
+          "market_p": 18.5,
+          "edge": 4.3,
+          "best_odds": 5.7,
+          "best_book": "Winamax (DE)"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "Morocco",
+      "away": "Haiti",
+      "commence": "2026-06-24T22:00:00Z",
+      "n_books": 47,
+      "model": {
+        "Away Win": 12.7,
+        "Draw": 32.7,
+        "Home Win": 54.6
+      },
+      "market": {
+        "Away Win": 6.3,
+        "Home Win": 79.7,
+        "Draw": 14.0
+      },
+      "edges": [
+        {
+          "outcome": "Draw",
+          "model_p": 32.7,
+          "market_p": 14.0,
+          "edge": 18.7,
+          "best_odds": 7.6,
+          "best_book": "Betfair"
+        },
+        {
+          "outcome": "Away Win",
+          "model_p": 12.7,
+          "market_p": 6.3,
+          "edge": 6.4,
+          "best_odds": 20.0,
+          "best_book": "1xBet"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "Czech Republic",
+      "away": "Mexico",
+      "commence": "2026-06-25T01:00:00Z",
+      "n_books": 44,
+      "model": {
+        "Away Win": 52.3,
+        "Draw": 35.9,
+        "Home Win": 11.8
+      },
+      "market": {
+        "Home Win": 27.0,
+        "Away Win": 47.4,
+        "Draw": 25.6
+      },
+      "edges": [
+        {
+          "outcome": "Draw",
+          "model_p": 35.9,
+          "market_p": 25.6,
+          "edge": 10.3,
+          "best_odds": 4.1,
+          "best_book": "Betfair"
+        },
+        {
+          "outcome": "Away Win",
+          "model_p": 52.3,
+          "market_p": 47.4,
+          "edge": 4.9,
+          "best_odds": 2.1,
+          "best_book": "GTbets"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "South Africa",
+      "away": "South Korea",
+      "commence": "2026-06-25T01:00:00Z",
+      "n_books": 46,
+      "model": {
+        "Away Win": 55.5,
+        "Draw": 33.6,
+        "Home Win": 11.0
+      },
+      "market": {
+        "Home Win": 16.7,
+        "Away Win": 59.1,
+        "Draw": 24.2
+      },
+      "edges": [
+        {
+          "outcome": "Draw",
+          "model_p": 33.6,
+          "market_p": 24.2,
+          "edge": 9.4,
+          "best_odds": 4.1,
+          "best_book": "Betfair"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "Cura\u00e7ao",
+      "away": "Ivory Coast",
+      "commence": "2026-06-25T20:00:00Z",
+      "n_books": 41,
+      "model": {
+        "Away Win": 73.2,
+        "Draw": 19.3,
+        "Home Win": 7.5
+      },
+      "market": {
+        "Home Win": 5.0,
+        "Away Win": 84.1,
+        "Draw": 10.9
+      },
+      "edges": [
+        {
+          "outcome": "Draw",
+          "model_p": 19.3,
+          "market_p": 10.9,
+          "edge": 8.4,
+          "best_odds": 9.8,
+          "best_book": "Betfair"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "Ecuador",
+      "away": "Germany",
+      "commence": "2026-06-25T20:00:00Z",
+      "n_books": 41,
+      "model": {
+        "Away Win": 68.5,
+        "Draw": 18.6,
+        "Home Win": 13.0
+      },
+      "market": {
+        "Home Win": 18.9,
+        "Away Win": 56.4,
+        "Draw": 24.7
+      },
+      "edges": [
+        {
+          "outcome": "Away Win",
+          "model_p": 68.5,
+          "market_p": 56.4,
+          "edge": 12.1,
+          "best_odds": 1.78,
+          "best_book": "GTbets"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "Japan",
+      "away": "Sweden",
+      "commence": "2026-06-25T23:00:00Z",
+      "n_books": 37,
+      "model": {
+        "Away Win": 23.4,
+        "Draw": 34.5,
+        "Home Win": 42.0
+      },
+      "market": {
+        "Home Win": 45.2,
+        "Away Win": 26.6,
+        "Draw": 28.2
+      },
+      "edges": [
+        {
+          "outcome": "Draw",
+          "model_p": 34.5,
+          "market_p": 28.2,
+          "edge": 6.3,
+          "best_odds": 3.53,
+          "best_book": "GTbets"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "Tunisia",
+      "away": "Netherlands",
+      "commence": "2026-06-25T23:00:00Z",
+      "n_books": 38,
+      "model": {
+        "Away Win": 78.5,
+        "Draw": 16.0,
+        "Home Win": 5.5
+      },
+      "market": {
+        "Away Win": 73.8,
+        "Home Win": 9.2,
+        "Draw": 17.0
+      },
+      "edges": [
+        {
+          "outcome": "Away Win",
+          "model_p": 78.5,
+          "market_p": 73.8,
+          "edge": 4.7,
+          "best_odds": 1.34,
+          "best_book": "GTbets"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "Paraguay",
+      "away": "Australia",
+      "commence": "2026-06-26T02:00:00Z",
+      "n_books": 43,
+      "model": {
+        "Away Win": 52.7,
+        "Draw": 34.7,
+        "Home Win": 12.6
+      },
+      "market": {
+        "Away Win": 24.2,
+        "Home Win": 33.6,
+        "Draw": 42.1
+      },
+      "edges": [
+        {
+          "outcome": "Away Win",
+          "model_p": 52.7,
+          "market_p": 24.2,
+          "edge": 28.5,
+          "best_odds": 4.3,
+          "best_book": "Betfair"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "Turkey",
+      "away": "United States",
+      "commence": "2026-06-26T02:00:00Z",
+      "n_books": 43,
+      "model": {
+        "Away Win": 38.8,
+        "Draw": 39.9,
+        "Home Win": 21.3
+      },
+      "market": {
+        "Home Win": 30.7,
+        "Away Win": 45.2,
+        "Draw": 24.1
+      },
+      "edges": [
+        {
+          "outcome": "Draw",
+          "model_p": 39.9,
+          "market_p": 24.1,
+          "edge": 15.8,
+          "best_odds": 4.3,
+          "best_book": "Winamax (DE)"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "Norway",
+      "away": "France",
+      "commence": "2026-06-26T19:00:00Z",
+      "n_books": 42,
+      "model": {
+        "Away Win": 68.7,
+        "Draw": 20.1,
+        "Home Win": 11.2
+      },
+      "market": {
+        "Away Win": 52.5,
+        "Home Win": 22.3,
+        "Draw": 25.2
+      },
+      "edges": [
+        {
+          "outcome": "Away Win",
+          "model_p": 68.7,
+          "market_p": 52.5,
+          "edge": 16.2,
+          "best_odds": 1.85,
+          "best_book": "BetOnline"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "Senegal",
+      "away": "Iraq",
+      "commence": "2026-06-26T19:00:00Z",
+      "n_books": 41,
+      "model": {
+        "Away Win": 26.8,
+        "Draw": 35.9,
+        "Home Win": 37.2
+      },
+      "market": {
+        "Away Win": 9.1,
+        "Home Win": 73.2,
+        "Draw": 17.7
+      },
+      "edges": [
+        {
+          "outcome": "Draw",
+          "model_p": 35.9,
+          "market_p": 17.7,
+          "edge": 18.2,
+          "best_odds": 5.8,
+          "best_book": "Tipico"
+        },
+        {
+          "outcome": "Away Win",
+          "model_p": 26.8,
+          "market_p": 9.1,
+          "edge": 17.8,
+          "best_odds": 12.0,
+          "best_book": "Coolbet"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "Cape Verde",
+      "away": "Saudi Arabia",
+      "commence": "2026-06-27T00:00:00Z",
+      "n_books": 41,
+      "model": {
+        "Away Win": 43.5,
+        "Draw": 33.0,
+        "Home Win": 23.5
+      },
+      "market": {
+        "Home Win": 34.5,
+        "Away Win": 39.2,
+        "Draw": 26.3
+      },
+      "edges": [
+        {
+          "outcome": "Draw",
+          "model_p": 33.0,
+          "market_p": 26.3,
+          "edge": 6.7,
+          "best_odds": 3.84,
+          "best_book": "BetOnline"
+        },
+        {
+          "outcome": "Away Win",
+          "model_p": 43.5,
+          "market_p": 39.2,
+          "edge": 4.3,
+          "best_odds": 2.55,
+          "best_book": "Coolbet"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "Uruguay",
+      "away": "Spain",
+      "commence": "2026-06-27T00:00:00Z",
+      "n_books": 41,
+      "model": {
+        "Away Win": 64.7,
+        "Draw": 23.0,
+        "Home Win": 12.3
+      },
+      "market": {
+        "Away Win": 61.3,
+        "Home Win": 16.0,
+        "Draw": 22.7
+      },
+      "edges": [],
+      "has_value": false
+    },
+    {
+      "home": "New Zealand",
+      "away": "Belgium",
+      "commence": "2026-06-27T03:00:00Z",
+      "n_books": 41,
+      "model": {
+        "Away Win": 56.8,
+        "Draw": 30.6,
+        "Home Win": 12.5
+      },
+      "market": {
+        "Away Win": 76.9,
+        "Home Win": 7.8,
+        "Draw": 15.3
+      },
+      "edges": [
+        {
+          "outcome": "Draw",
+          "model_p": 30.6,
+          "market_p": 15.3,
+          "edge": 15.4,
+          "best_odds": 6.8,
+          "best_book": "Betfair"
+        },
+        {
+          "outcome": "Home Win",
+          "model_p": 12.5,
+          "market_p": 7.8,
+          "edge": 4.7,
+          "best_odds": 14.0,
+          "best_book": "Coolbet"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "Egypt",
+      "away": "Iran",
+      "commence": "2026-06-27T03:00:00Z",
+      "n_books": 41,
+      "model": {
+        "Away Win": 47.5,
+        "Draw": 36.1,
+        "Home Win": 16.4
+      },
+      "market": {
+        "Home Win": 45.4,
+        "Away Win": 24.6,
+        "Draw": 30.0
+      },
+      "edges": [
+        {
+          "outcome": "Away Win",
+          "model_p": 47.5,
+          "market_p": 24.6,
+          "edge": 22.9,
+          "best_odds": 4.1,
+          "best_book": "Tipico"
+        },
+        {
+          "outcome": "Draw",
+          "model_p": 36.1,
+          "market_p": 30.0,
+          "edge": 6.1,
+          "best_odds": 3.35,
+          "best_book": "Smarkets"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "Croatia",
+      "away": "Ghana",
+      "commence": "2026-06-27T21:00:00Z",
+      "n_books": 40,
+      "model": {
+        "Away Win": 20.9,
+        "Draw": 27.4,
+        "Home Win": 51.7
+      },
+      "market": {
+        "Home Win": 58.5,
+        "Away Win": 16.4,
+        "Draw": 25.1
+      },
+      "edges": [
+        {
+          "outcome": "Away Win",
+          "model_p": 20.9,
+          "market_p": 16.4,
+          "edge": 4.5,
+          "best_odds": 6.8,
+          "best_book": "Smarkets"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "Panama",
+      "away": "England",
+      "commence": "2026-06-27T21:00:00Z",
+      "n_books": 40,
+      "model": {
+        "Away Win": 79.1,
+        "Draw": 14.9,
+        "Home Win": 6.0
+      },
+      "market": {
+        "Away Win": 76.4,
+        "Home Win": 8.8,
+        "Draw": 14.8
+      },
+      "edges": [],
+      "has_value": false
+    },
+    {
+      "home": "Colombia",
+      "away": "Portugal",
+      "commence": "2026-06-27T23:30:00Z",
+      "n_books": 40,
+      "model": {
+        "Away Win": 43.5,
+        "Draw": 31.1,
+        "Home Win": 25.4
+      },
+      "market": {
+        "Home Win": 26.4,
+        "Away Win": 46.0,
+        "Draw": 27.5
+      },
+      "edges": [],
+      "has_value": false
+    },
+    {
+      "home": "DR Congo",
+      "away": "Uzbekistan",
+      "commence": "2026-06-27T23:30:00Z",
+      "n_books": 40,
+      "model": {
+        "Away Win": 49.1,
+        "Draw": 32.6,
+        "Home Win": 18.3
+      },
+      "market": {
+        "Home Win": 45.5,
+        "Away Win": 28.2,
+        "Draw": 26.3
+      },
+      "edges": [
+        {
+          "outcome": "Away Win",
+          "model_p": 49.1,
+          "market_p": 28.2,
+          "edge": 20.9,
+          "best_odds": 3.6,
+          "best_book": "Coolbet"
+        },
+        {
+          "outcome": "Draw",
+          "model_p": 32.6,
+          "market_p": 26.3,
+          "edge": 6.3,
+          "best_odds": 3.9,
+          "best_book": "Betfair"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "Algeria",
+      "away": "Austria",
+      "commence": "2026-06-28T02:00:00Z",
+      "n_books": 40,
+      "model": {
+        "Away Win": 42.2,
+        "Draw": 34.8,
+        "Home Win": 23.0
+      },
+      "market": {
+        "Home Win": 31.0,
+        "Away Win": 38.1,
+        "Draw": 30.9
+      },
+      "edges": [
+        {
+          "outcome": "Away Win",
+          "model_p": 42.2,
+          "market_p": 38.1,
+          "edge": 4.1,
+          "best_odds": 2.64,
+          "best_book": "Smarkets"
+        }
+      ],
+      "has_value": true
+    },
+    {
+      "home": "Jordan",
+      "away": "Argentina",
+      "commence": "2026-06-28T02:00:00Z",
+      "n_books": 40,
+      "model": {
+        "Away Win": 81.9,
+        "Draw": 14.1,
+        "Home Win": 4.0
+      },
+      "market": {
+        "Away Win": 78.9,
+        "Home Win": 7.0,
+        "Draw": 14.1
+      },
+      "edges": [],
+      "has_value": false
+    }
+  ]
+}

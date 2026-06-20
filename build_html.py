@@ -89,6 +89,29 @@ def build_data():
     return matches
 
 
+def load_edges(top_n=15):
+    """Read value_bets.json and return a flat list sorted by edge, skipping placeholder odds."""
+    path = os.path.join(BASE_DIR, "value_bets.json")
+    if not os.path.exists(path):
+        return []
+    with open(path) as f:
+        data = json.load(f)
+    flat = []
+    for r in data.get("results", []):
+        for e in r.get("edges", []):
+            if e["best_odds"] and e["best_odds"] < 100:   # drop suspended/placeholder lines
+                flat.append({
+                    "home":      r["home"],
+                    "away":      r["away"],
+                    "outcome":   e["outcome"],
+                    "edge":      e["edge"],
+                    "best_odds": e["best_odds"],
+                    "best_book": e["best_book"] or "",
+                })
+    flat.sort(key=lambda x: -x["edge"])
+    return flat[:top_n]
+
+
 HTML_TEMPLATE = """\
 <!DOCTYPE html>
 <html lang="en">
@@ -232,6 +255,55 @@ HTML_TEMPLATE = """\
       font-size: 0.72rem; color: #374151;
     }
 
+    /* ── Edges section ── */
+    .edges-card {
+      background: #050f08;
+      border: 1px solid #166534;
+      border-radius: 16px;
+      padding: 22px 24px 16px;
+      margin-bottom: 44px;
+    }
+    .edges-header {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 18px; flex-wrap: wrap;
+    }
+    .edges-title { font-size: 1.05rem; font-weight: 800; color: #f0fdf4; }
+    .edges-sub {
+      margin-left: auto; font-size: 0.78rem; color: #4ade80;
+      background: #14532d; border-radius: 99px; padding: 2px 10px;
+    }
+    .edges-scroll { overflow-x: auto; }
+    .edges-table {
+      width: 100%; border-collapse: collapse;
+      font-size: 0.85rem; min-width: 520px;
+    }
+    .edges-table thead th {
+      text-align: left; color: #4ade80;
+      font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;
+      padding: 0 12px 10px; border-bottom: 1px solid #166534;
+      white-space: nowrap;
+    }
+    .edges-table tbody tr { border-bottom: 1px solid #0d2b1533; transition: background 0.1s; }
+    .edges-table tbody tr:hover { background: #0d2b1566; }
+    .edges-table td { padding: 9px 12px; vertical-align: middle; }
+    .e-rank  { color: #374151; font-size: 0.72rem; width: 28px; }
+    .e-match { font-weight: 600; }
+    .e-vs    { color: #374151; font-weight: 400; margin: 0 5px; font-size: 0.8rem; }
+    .e-edge  { font-weight: 800; white-space: nowrap; }
+    .e-odds  { white-space: nowrap; }
+    .e-book  { color: #4b5563; font-size: 0.78rem; }
+    .obadge {
+      border-radius: 99px; padding: 2px 9px;
+      font-size: 0.7rem; font-weight: 700; white-space: nowrap;
+    }
+    .obadge-hw { background: #14532d; color: #86efac; }
+    .obadge-dr { background: #451a03; color: #fcd34d; }
+    .obadge-aw { background: #450a0a; color: #fca5a5; }
+    .edges-footer {
+      margin-top: 14px; font-size: 0.7rem;
+      color: #166534; text-align: center;
+    }
+
     /* ── Footer ── */
     footer {
       margin-top: 60px; text-align: center;
@@ -250,6 +322,8 @@ HTML_TEMPLATE = """\
     <span class="updated-badge">Updated __UPDATED__</span>
   </header>
 
+  <section class="edges-card" id="edges-section"></section>
+
   <main id="app"></main>
 
   <footer>
@@ -259,7 +333,41 @@ HTML_TEMPLATE = """\
 
 </div>
 <script>
-const MATCHES = __DATA__;
+const MATCHES    = __DATA__;
+const VALUE_BETS = __VALUE_BETS__;
+
+function renderEdges() {
+  const sec = document.getElementById('edges-section');
+  if (!VALUE_BETS || VALUE_BETS.length === 0) { sec.style.display = 'none'; return; }
+
+  const rows = VALUE_BETS.map((e, i) => {
+    const cls = e.outcome === 'Draw' ? 'obadge-dr'
+              : e.outcome === 'Home Win' ? 'obadge-hw' : 'obadge-aw';
+    const color = e.edge >= 20 ? '#22c55e' : e.edge >= 10 ? '#86efac' : '#bbf7d0';
+    const odds  = e.best_odds ? `${e.best_odds} <span class="e-book">@ ${e.best_book}</span>` : '—';
+    return `<tr>
+      <td class="e-rank">${i + 1}</td>
+      <td class="e-match">${e.home}<span class="e-vs">vs</span>${e.away}</td>
+      <td><span class="obadge ${cls}">${e.outcome}</span></td>
+      <td class="e-edge" style="color:${color}">+${e.edge}%</td>
+      <td class="e-odds">${odds}</td>
+    </tr>`;
+  }).join('');
+
+  sec.innerHTML = `
+    <div class="edges-header">
+      <span style="font-size:1.3rem">🔥</span>
+      <span class="edges-title">Best Value Edges</span>
+      <span class="edges-sub">${VALUE_BETS.length} bets vs market</span>
+    </div>
+    <div class="edges-scroll">
+      <table class="edges-table">
+        <thead><tr><th>#</th><th>Match</th><th>Bet</th><th>Edge</th><th>Best Odds</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+    <div class="edges-footer">Model probability vs consensus bookmaker line · bet responsibly</div>`;
+}
 
 function fmtDate(iso) {
   const d = new Date(iso + 'T12:00:00');
@@ -343,6 +451,7 @@ function render() {
   });
 }
 
+renderEdges();
 render();
 </script>
 </body>
@@ -353,10 +462,13 @@ render();
 def main():
     print("Loading model and computing predictions…")
     matches = build_data()
-    print(f"  {len(matches)} upcoming fixtures found")
+    edges   = load_edges()
+    print(f"  {len(matches)} upcoming fixtures")
+    print(f"  {len(edges)} value edges loaded from value_bets.json")
 
     updated = datetime.now().strftime("%B %d, %Y at %I:%M %p")
-    html = HTML_TEMPLATE.replace("__DATA__", json.dumps(matches, ensure_ascii=False))
+    html = HTML_TEMPLATE.replace("__DATA__",       json.dumps(matches, ensure_ascii=False))
+    html = html.replace("__VALUE_BETS__", json.dumps(edges,   ensure_ascii=False))
     html = html.replace("__UPDATED__", updated)
 
     out_path = os.path.join(BASE_DIR, "index.html")
