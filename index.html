@@ -16,7 +16,23 @@
       min-height: 100vh;
     }
 
-    .container { max-width: 1100px; margin: 0 auto; padding: 0 20px 80px; margin-top: 58px; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 20px 80px; margin-top: 58px; position: relative; z-index: 1; }
+
+    /* ── Scroll ball ── */
+    .scroll-ball {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(0deg);
+      font-size: 580px;
+      line-height: 1;
+      opacity: 0.045;
+      pointer-events: none;
+      user-select: none;
+      z-index: 0;
+      filter: grayscale(1);
+      will-change: transform;
+    }
 
     /* ── Ticker ── */
     .ticker-bar {
@@ -312,13 +328,14 @@
   </style>
 </head>
 <body>
+<div class="scroll-ball" aria-hidden="true">⚽</div>
 <div id="ticker"></div>
 <div class="container">
 
   <header class="site-hero">
     <div class="hero-eyebrow">FIFA World Cup 2026</div>
     <h1 class="hero-title">Match<br>Picks</h1>
-    <p class="hero-sub">AI predictions for every game · updated daily · last refreshed June 20, 2026 at 04:06 PM</p>
+    <p class="hero-sub">AI predictions for every game · updated daily · last refreshed June 20, 2026 at 04:42 PM</p>
     <div class="hero-stats">
       <div class="hero-stat">
         <span class="stat-val">59.6%</span>
@@ -548,6 +565,23 @@ function renderTicker() {
 renderTicker();
 renderEdges();
 render();
+
+// Scroll-driven ball rotation
+(function() {
+  const ball = document.querySelector('.scroll-ball');
+  if (!ball) return;
+  let ticking = false;
+  window.addEventListener('scroll', function() {
+    if (!ticking) {
+      requestAnimationFrame(function() {
+        const deg = window.scrollY * 0.08;
+        ball.style.transform = 'translate(-50%, -50%) rotate(' + deg + 'deg)';
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+})();
 
 // Scroll reveal
 (function() {
