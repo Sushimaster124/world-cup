@@ -474,7 +474,7 @@
   <header class="site-hero">
     <div class="hero-eyebrow">FIFA World Cup 2026</div>
     <h1 class="hero-title">Match<br>Picks</h1>
-    <p class="hero-sub">AI predictions for every game · updated daily · last refreshed June 20, 2026 at 06:24 PM</p>
+    <p class="hero-sub">AI predictions for every game · updated daily · last refreshed June 20, 2026 at 06:29 PM</p>
     <div class="hero-stats">
       <div class="hero-stat">
         <span class="stat-val">59.6%</span>
@@ -618,10 +618,40 @@ function outcomePhrase(e) {
   return `<strong>${e.outcome}</strong>`;
 }
 
-function betStatement(e) {
+function betStatement(e, sort) {
+  sort = sort || currentSort;
   const odds = e.dk_odds || e.best_odds;
   const book = e.dk_odds ? 'DraftKings' : e.best_book;
   const am   = odds ? toAmerican(odds) : null;
+  const atBook = am && book ? `${book} <strong class="mono">${am}</strong>` : '';
+
+  if (sort === 'ev') {
+    const evStr = e.ev != null
+      ? `<strong class="mono">${e.ev >= 0 ? '+' : ''}$${e.ev.toFixed(2)}</strong>`
+      : '—';
+    return `${atBook ? 'At ' + atBook + ', ' : ''}${outcomePhrase(e)} returns ${evStr} per $1 staked. Model sees a <strong class="mono">${e.model_p}%</strong> chance vs the market's <strong class="mono">${e.market_p}%</strong>.`;
+  }
+
+  if (sort === 'kelly') {
+    return `The model suggests betting <strong class="mono">${e.kelly || 0}%</strong> of your bankroll on ${outcomePhrase(e)}${atBook ? ' at ' + atBook : ''} — based on a <strong class="mono">${e.model_p}%</strong> model probability vs <strong class="mono">${e.market_p}%</strong> market.`;
+  }
+
+  if (sort === 'half_kelly') {
+    return `A conservative <strong class="mono">${e.half_kelly || 0}%</strong> stake (half Kelly) on ${outcomePhrase(e)}${atBook ? ' at ' + atBook : ''}. Model gives it <strong class="mono">${e.model_p}%</strong> vs the market's <strong class="mono">${e.market_p}%</strong>.`;
+  }
+
+  if (sort === 'odds') {
+    return `Best available price on ${outcomePhrase(e)} is ${atBook || '—'}. Model: <strong class="mono">${e.model_p}%</strong> chance, market: <strong class="mono">${e.market_p}%</strong> — a <strong class="mono">+${e.edge}%</strong> edge.`;
+  }
+
+  if (sort === 'confidence') {
+    const cert = e.certainty || 0;
+    const certStr = `<strong class="mono">${cert >= 0 ? '+' : ''}${cert}%</strong>`;
+    const baseline = (e.outcome === 'Over 2.5' || e.outcome === 'Under 2.5') ? '50%' : '33%';
+    return `Our model places ${outcomePhrase(e)} at <strong class="mono">${e.model_p}%</strong> — ${certStr} above the ${baseline} baseline. Market has it at <strong class="mono">${e.market_p}%</strong>${atBook ? ' (' + atBook + ')' : ''}.`;
+  }
+
+  // default: edge
   const oddsStr = am ? ` (${book} <strong class="mono">${am}</strong>)` : '';
   return `Our model gives ${outcomePhrase(e)} a <strong class="mono">${e.model_p}%</strong> chance. The market prices it at <strong class="mono">${e.market_p}%</strong>${oddsStr} — a <strong class="mono">+${e.edge}%</strong> edge.`;
 }
@@ -636,7 +666,7 @@ function betChip(e, sort) {
       <div class="chip-top">
         <span class="chip-match">${e.home} vs ${e.away}</span>
       </div>
-      <div class="chip-statement">${betStatement(e)}</div>
+      <div class="chip-statement">${betStatement(e, sort)}</div>
       <div class="chip-bottom">
         ${badge}
         ${showDk ? `<span class="chip-dk"><span class="dk-label">${e.dk_odds ? 'DraftKings' : e.best_book}</span><span class="mono">${toAmerican(e.dk_odds || e.best_odds)}</span></span>` : ''}
