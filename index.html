@@ -458,7 +458,7 @@
   <header class="site-hero">
     <div class="hero-eyebrow">FIFA World Cup 2026</div>
     <h1 class="hero-title">Match<br>Picks</h1>
-    <p class="hero-sub">AI predictions for every game · updated daily · last refreshed June 20, 2026 at 05:18 PM</p>
+    <p class="hero-sub">AI predictions for every game · updated daily · last refreshed June 20, 2026 at 05:33 PM</p>
     <div class="hero-stats">
       <div class="hero-stat">
         <span class="stat-val">59.6%</span>
@@ -507,9 +507,13 @@ const mktProbs = {};
 function marketFav(home, away) {
   const m = mktProbs[home + '|' + away];
   if (!m) return null;
-  const hw = m.home || 0, aw = m.away || 0, dr = m.draw || 0;
-  if (hw > aw && hw > dr) return 'home';
-  if (aw > hw && aw > dr) return 'away';
+  // If an outcome has no edge it won't be in VALUE_BETS — infer its market prob
+  // from the remaining probability (vig-free probs sum to ~100)
+  const known_dr = m.draw || 0;
+  const known_hw = m.home !== undefined ? m.home : Math.max(0, 100 - (m.away || 0) - known_dr);
+  const known_aw = m.away !== undefined ? m.away : Math.max(0, 100 - known_hw - known_dr);
+  if (known_hw > known_aw && known_hw > known_dr) return 'home';
+  if (known_aw > known_hw && known_aw > known_dr) return 'away';
   return null;
 }
 
