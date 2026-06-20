@@ -216,8 +216,20 @@
     .day-tab.active {
       background: #111; border-color: #111; color: #fff;
     }
+    .day-tab .tab-dot {
+      display: inline-block; width: 6px; height: 6px;
+      background: #16a34a; border-radius: 50%; margin-left: 5px;
+      vertical-align: middle; position: relative; top: -1px;
+    }
+    .day-tab.active .tab-dot { background: #4ade80; }
     .day-panel { display: none; }
     .day-panel.active { display: block; }
+    .day-bets-header {
+      display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px;
+    }
+    .day-bets-title { font-size: 0.95rem; font-weight: 700; color: #111; }
+    .day-bets-count { font-size: 0.75rem; color: #bbb; }
+    .day-bets-block { margin-bottom: 28px; }
 
     /* ── Date section ── */
     .date-section { margin-bottom: 32px; }
@@ -416,7 +428,7 @@
   <header class="site-hero">
     <div class="hero-eyebrow">FIFA World Cup 2026</div>
     <h1 class="hero-title">Match<br>Picks</h1>
-    <p class="hero-sub">AI predictions for every game · updated daily · last refreshed June 20, 2026 at 05:00 PM</p>
+    <p class="hero-sub">AI predictions for every game · updated daily · last refreshed June 20, 2026 at 05:04 PM</p>
     <div class="hero-stats">
       <div class="hero-stat">
         <span class="stat-val">59.6%</span>
@@ -436,8 +448,6 @@
       </div>
     </div>
   </header>
-
-  <section class="bets-section" id="edges-section"></section>
 
   <div id="acc-section"></div>
 
@@ -504,24 +514,21 @@ function betChip(e) {
     </div>`;
 }
 
-function renderEdges() {
-  const sec = document.getElementById('edges-section');
-  if (!VALUE_BETS || VALUE_BETS.length === 0) { sec.style.display = 'none'; return; }
+function betsForDate(dateStr) {
+  return (VALUE_BETS || []).filter(e => e.date === dateStr);
+}
 
-  const today     = todayISO();
-  const todayBets = VALUE_BETS.filter(e => e.date === today);
-
-  const chipsHtml = todayBets.length
-    ? `<div class="chips-grid">${todayBets.map(e => betChip(e)).join('')}</div>`
-    : `<div class="no-bets-today">No value edges found for today's matches.</div>`;
-
-  sec.innerHTML = `
-    <div class="bets-header">
-      <span class="bets-title">Today's Best Bets</span>
-      <span class="bets-count">${todayBets.length} edge${todayBets.length !== 1 ? 's' : ''} found</span>
+function renderDayBets(dateStr) {
+  const bets = betsForDate(dateStr);
+  if (!bets.length) return '';
+  return `<div class="day-bets-block">
+    <div class="day-bets-header">
+      <span class="day-bets-title">Best Bets</span>
+      <span class="day-bets-count">${bets.length} edge${bets.length !== 1 ? 's' : ''} found</span>
     </div>
-    ${chipsHtml}
-    <p class="bets-footer">Edges are vs the average bookmaker line with the house cut removed · always bet responsibly</p>`;
+    <div class="chips-grid">${bets.map(e => betChip(e)).join('')}</div>
+    <p class="bets-footer">Edges are vs the avg bookmaker line with the house cut removed · always bet responsibly</p>
+  </div>`;
 }
 
 function fmtDate(iso) {
@@ -615,13 +622,16 @@ function render() {
 
   const app = document.getElementById('app');
 
-  const tabsHtml = sortedDates.map(d =>
-    `<button class="day-tab${d === defaultTab ? ' active' : ''}" data-date="${d}">${tabLabel(d)}</button>`
-  ).join('');
+  const tabsHtml = sortedDates.map(d => {
+    const hasBets = betsForDate(d).length > 0;
+    const dot = hasBets ? '<span class="tab-dot"></span>' : '';
+    return `<button class="day-tab${d === defaultTab ? ' active' : ''}" data-date="${d}">${tabLabel(d)}${dot}</button>`;
+  }).join('');
 
   const panelsHtml = sortedDates.map(d => {
     const cards = byDate[d].map(card).join('');
     return `<div class="day-panel${d === defaultTab ? ' active' : ''}" data-date="${d}">
+      ${renderDayBets(d)}
       <div class="match-grid">${cards}</div>
     </div>`;
   }).join('');
@@ -730,7 +740,6 @@ function renderAccuracy() {
 
 renderTicker();
 renderAccuracy();
-renderEdges();
 render();
 
 // Scroll-driven ball rotation
