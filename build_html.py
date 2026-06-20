@@ -887,11 +887,16 @@ function renderDayBets(dateStr) {
   const bets = betsForDate(dateStr);
   if (!bets.length) return '';
   const chips = sortedBets(dateStr, currentSort).map(e => betChip(e, currentSort)).join('');
+  const sortBar = `<div class="bet-sort-bar">
+    <span class="bet-sort-label">View top bets by</span>
+    ${SORT_OPTS.map(o => `<button class="sort-btn${o.key === currentSort ? ' active' : ''}" data-sort="${o.key}">${o.label}</button>`).join('')}
+  </div>`;
   return `<div class="day-bets-block">
     <div class="day-bets-header">
       <span class="day-bets-title">Best Bets</span>
       <span class="day-bets-count">${bets.length} edge${bets.length !== 1 ? 's' : ''} found</span>
     </div>
+    ${sortBar}
     <div class="chips-grid" data-date="${dateStr}">${chips}</div>
     <p class="bets-footer">Edges vs avg bookmaker (vig removed) · always bet responsibly</p>
   </div>`;
@@ -1017,7 +1022,7 @@ function render() {
     </div>`;
   }).join('');
 
-  app.innerHTML = `${renderSortBar()}<div class="day-tabs">${tabsHtml}</div>${panelsHtml}`;
+  app.innerHTML = `<div class="day-tabs">${tabsHtml}</div>${panelsHtml}`;
 
   app.querySelectorAll('.day-tab').forEach(btn => {
     btn.addEventListener('click', function() {
